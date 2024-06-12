@@ -1,4 +1,4 @@
-#include "common/log.h"
+#include "../rocket/common/log.h"
 
 int main()
 {

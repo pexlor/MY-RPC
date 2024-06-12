@@ -41,7 +41,7 @@ void EventLoop::loop(){
             tmp_tasks.pop();
         }
 
-        int ret = epoll_pwait(g_epoll_max_timeout);
+        //int ret = epoll_wait(g_epoll_max_timeout);
     }
 }
 

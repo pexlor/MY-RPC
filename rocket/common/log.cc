@@ -68,25 +68,32 @@ std::string LogEvent::toSting()
 }
 
 static Logger* g_logger = nullptr;
+
 Logger * Logger::GetGloballLogger()
 {
     if(g_logger)
     {
         return g_logger;
     }
-    return new Logger();
+    g_logger = new Logger();
+    return g_logger;
 }
+
 void Logger::pushlog(const std::string & msg)
 {
     m_buffer.push(msg);
 }
+
 void Logger::log()
 {
     while(!m_buffer.empty())
     {
+        
         std::string msg = m_buffer.front();
+        msg += "\n";
         m_buffer.pop();
         printf(msg.c_str());
     }
 }
+
 }
