@@ -9,9 +9,8 @@
 namespace rocket {
 
 template<typename... Args>
-
-std::string formatString(const char* str,Args&&... agrs)
-{
+std::string formatString(const char* str,Args&&... args)
+{ 
     int size = snprintf(nullptr,0,str,args...);
 
     std::string result;
@@ -25,7 +24,7 @@ std::string formatString(const char* str,Args&&... agrs)
 
 
 #define DEBUGLOG(str, ... ) \
-    std::string msg = (new rocket::LogEvent(rocket::LogLevel::Debug))->toSting() + rocket::formatString(str,##__VA_ARGS__);\
+    std::string msg = (rocket::LogEvent(rocket::LogLevel::Debug))->toSting() + rocket::formatString(str,##__VA_ARGS__);\
     rocket::Logger::GetGloballLogger()->pushlog(msg); \
     rocket::Logger::GetGloballLogger()->log(); \
 
