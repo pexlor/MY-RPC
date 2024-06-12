@@ -1,7 +1,7 @@
 #include "log.h"
 #include "util.h"
 #include <sys/time.h>
-
+#include "config.h"
 
 
 
@@ -23,6 +23,23 @@ std::string LogLevelToString(LogLevel level)
     }
 }
 
+
+LogLevel StringToLogLevel(const std::string& log_level)
+{
+    if(log_level == "DEBUG")
+    {
+        return Debug;
+    }else if(log_level == "INFO")
+    {
+        return Info;
+    }else if(log_level == "ERROR")
+    {
+        return Error;
+    }else
+    {
+        return Unknown;
+    }
+}
 
 LogEvent::LogEvent(LogLevel level)
 {
@@ -69,13 +86,19 @@ std::string LogEvent::toSting()
 
 static Logger* g_logger = nullptr;
 
+Logger::Logger(LogLevel level)
+{
+    m_set_level = level;
+}
+
 Logger * Logger::GetGloballLogger()
 {
     if(g_logger)
     {
         return g_logger;
     }
-    g_logger = new Logger();
+    LogLevel global_log_levle = StringToLogLevel(Config::GetGlobalConfig()->m_log_level);
+    g_logger = new Logger(global_log_levle);
     return g_logger;
 }
 

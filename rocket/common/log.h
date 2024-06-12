@@ -24,9 +24,19 @@ std::string formatString(const char* str,Args&&... args)
 
 
 #define DEBUGLOG(str, ... ) \
-    std::string msg = (rocket::LogEvent(rocket::LogLevel::Debug))->toSting() + rocket::formatString(str,##__VA_ARGS__);\
+    std::string msg = (new rocket::LogEvent(rocket::LogLevel::Debug))->toSting() + rocket::formatString(str,##__VA_ARGS__);\
     rocket::Logger::GetGloballLogger()->pushlog(msg); \
-    rocket::Logger::GetGloballLogger()->log(); \
+    rocket::Logger::GetGloballLogger()->log();
+
+#define INFOLOG(str, ... ) \
+    std::string msg = (new rocket::LogEvent(rocket::LogLevel::Info))->toSting() + rocket::formatString(str,##__VA_ARGS__);\
+    rocket::Logger::GetGloballLogger()->pushlog(msg); \
+    rocket::Logger::GetGloballLogger()->log();
+
+#define ERRORLOG(str, ... ) \
+    std::string msg = (new rocket::LogEvent(rocket::LogLevel::Error))->toSting() + rocket::formatString(str,##__VA_ARGS__);\
+    rocket::Logger::GetGloballLogger()->pushlog(msg); \
+    rocket::Logger::GetGloballLogger()->log();
 
 enum LogLevel {
     Unknown = 0,
@@ -39,15 +49,18 @@ enum LogLevel {
 class Logger {
 public:
     typedef std::shared_ptr<Logger> s_ptr;
+    Logger(LogLevel level);
     void pushlog(const std::string & msg);
     static Logger * GetGloballLogger();
     void log();
 private:
-    LogLevel m_set_level;
+    static LogLevel m_set_level;
     std::queue<std::string> m_buffer;
 };
 
 std::string LogLevelToString(LogLevel level);
+LogLevel StringToLogLevel(const std::string& log_level);
+
 
 class LogEvent {
 public:
