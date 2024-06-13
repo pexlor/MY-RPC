@@ -24,18 +24,21 @@ std::string formatString(const char* str,Args&&... args)
 
 
 #define DEBUGLOG(str, ... ) \
+        if(rocket::Logger::GetGloballLogger()->getLogLevel() >= rocket::Debug)  \
         {std::string debugmsg = (rocket::LogEvent(rocket::LogLevel::Debug)).toSting() + rocket::formatString(str,##__VA_ARGS__);\
         rocket::Logger::GetGloballLogger()->pushlog(debugmsg); \
         rocket::Logger::GetGloballLogger()->log();}
     
 
 #define INFOLOG(str, ... ) \
-    {std::string infomsg = (new rocket::LogEvent(rocket::LogLevel::Info))->toSting() + rocket::formatString(str,##__VA_ARGS__);\
+    if(rocket::Logger::GetGloballLogger()->getLogLevel() >= rocket::Info)  \
+    {std::string infomsg = (rocket::LogEvent(rocket::LogLevel::Info)).toSting() + rocket::formatString(str,##__VA_ARGS__);\
     rocket::Logger::GetGloballLogger()->pushlog(infomsg); \
     rocket::Logger::GetGloballLogger()->log();}
 
 #define ERRORLOG(str, ... ) \
-    {std::string errormsg = (new rocket::LogEvent(rocket::LogLevel::Error))->toSting() + rocket::formatString(str,##__VA_ARGS__);\
+    if(rocket::Logger::GetGloballLogger()->getLogLevel() >= rocket::Error)  \
+    {std::string errormsg = (rocket::LogEvent(rocket::LogLevel::Error)).toSting() + rocket::formatString(str,##__VA_ARGS__);\
     rocket::Logger::GetGloballLogger()->pushlog(errormsg); \
     rocket::Logger::GetGloballLogger()->log();}
 
@@ -52,7 +55,9 @@ public:
     typedef std::shared_ptr<Logger> s_ptr;
     Logger(LogLevel level);
     void pushlog(const std::string & msg);
+    LogLevel getLogLevel();
     static Logger * GetGloballLogger();
+    static void SetGetGloballLogger();
     void log();
 private:
     LogLevel m_set_level;

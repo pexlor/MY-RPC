@@ -91,15 +91,20 @@ Logger::Logger(LogLevel level)
     this->m_set_level = level;
 }
 
-Logger * Logger::GetGloballLogger()
+void Logger::SetGetGloballLogger()
 {
-    if(g_logger)
-    {
-        return g_logger;
-    }
     LogLevel global_log_levle = StringToLogLevel(Config::GetGlobalConfig()->m_log_level);
     g_logger = new Logger(global_log_levle);
-    return g_logger;
+}
+
+Logger * Logger::GetGloballLogger()
+{
+    return g_logger;   
+}
+
+LogLevel Logger::getLogLevel()
+{
+    return m_set_level;
 }
 
 void Logger::pushlog(const std::string & msg)
