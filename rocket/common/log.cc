@@ -88,7 +88,7 @@ static Logger* g_logger = nullptr;
 
 Logger::Logger(LogLevel level)
 {
-    m_set_level = level;
+    this->m_set_level = level;
 }
 
 Logger * Logger::GetGloballLogger()

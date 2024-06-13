@@ -2,17 +2,17 @@
 #define READ_XML_NODE(name,parent) \
     TiXmlElement * name##_node = parent->FirstChildElement(#name); \
     if(!name##_node){\
-        printf("Start rpc sever error");\
+        printf("Start rpc sever error 1");\
         exit(0); \
     }
 
 #define READ_STR_FROM_XML_NODE(name,parent) \
     TiXmlElement * name##_node = parent->FirstChildElement(#name); \
     if(!name##_node || !name##_node->GetText()){\
-        printf("Start rpc sever error");\
+        printf("Start rpc sever error 2");\
         exit(0); \
     } \
-    std::string name## = std::string(name##_node->GetText());\
+    std::string name##_str = std::string(name##_node->GetText());\
 
 
 namespace rocket {
@@ -30,7 +30,6 @@ namespace rocket {
         {
             g_config = new Config(xmlfile);
         }
-        
     }
    Config::Config(const char * xmlfile)
    {
@@ -40,7 +39,7 @@ namespace rocket {
 
         if(!ret)
         {
-            printf("Start rpc server error\n");
+            printf("Start rpc server error ,file:%s\n",xmlfile);
             exit(0);
         }
 
@@ -48,7 +47,7 @@ namespace rocket {
         READ_XML_NODE(log,root_node);
         READ_STR_FROM_XML_NODE(log_level,log_node);
 
-        m_log_level = log_level;
+        m_log_level = log_level_str;
    }
 
 
