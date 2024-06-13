@@ -40,6 +40,7 @@ namespace rocket {
         if(!ret)
         {
             printf("Start rpc server error ,file:%s\n",xmlfile);
+            xml_document->Error();
             exit(0);
         }
 
