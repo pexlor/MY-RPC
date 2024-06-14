@@ -1,9 +1,4 @@
 #include "log.h"
-#include "util.h"
-#include <sys/time.h>
-#include "config.h"
-
-
 
 namespace rocket {
 
@@ -109,17 +104,29 @@ LogLevel Logger::getLogLevel()
 
 void Logger::pushlog(const std::string & msg)
 {
+    
+    ScopeMutex<Mutex> lock(m_mutex);
     m_buffer.push(msg);
 }
 
 void Logger::log()
 {
-    while(!m_buffer.empty())
+    std::queue<std::string> t_buffer;
+
+    {
+        ScopeMutex<Mutex> lock(m_mutex);
+        //DEBUGLOG("m_buffersize = %d",m_buffer.size()); 死锁了
+        t_buffer = m_buffer;
+        m_buffer.swap(t_buffer);
+        lock.unlock();
+    }
+
+    while(!t_buffer.empty())
     {
         
-        std::string msg = m_buffer.front();
+        std::string msg = t_buffer.front();
         msg += "\n";
-        m_buffer.pop();
+        t_buffer.pop();
         printf(msg.c_str());
     }
 }

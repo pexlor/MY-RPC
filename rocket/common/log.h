@@ -4,7 +4,10 @@
 #include <queue>
 #include <memory>
 #include <sstream>
-
+#include "util.h"
+#include <sys/time.h>
+#include "config.h"
+#include "rocket/common/mutex.h"
 
 namespace rocket {
 
@@ -60,6 +63,7 @@ public:
     static void SetGetGloballLogger();
     void log();
 private:
+    Mutex m_mutex = Mutex();
     LogLevel m_set_level;
     std::queue<std::string> m_buffer;
 };
