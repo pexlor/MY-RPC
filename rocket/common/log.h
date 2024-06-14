@@ -4,7 +4,10 @@
 #include <queue>
 #include <memory>
 #include <sstream>
-
+#include "util.h"
+#include <sys/time.h>
+#include "config.h"
+#include "rocket/common/mutex.h"
 
 namespace rocket {
 
@@ -23,22 +26,23 @@ std::string formatString(const char* str,Args&&... args)
 }
 
 
+
 #define DEBUGLOG(str, ... ) \
         if(rocket::Logger::GetGloballLogger()->getLogLevel() >= rocket::Debug)  \
-        {std::string debugmsg = (rocket::LogEvent(rocket::LogLevel::Debug)).toSting() + rocket::formatString(str,##__VA_ARGS__);\
+        {std::string debugmsg = (rocket::LogEvent(rocket::LogLevel::Debug)).toSting()+"["+std::string(__FILE__)+":"+std::to_string(__LINE__)+"]\t" + rocket::formatString(str,##__VA_ARGS__);\
         rocket::Logger::GetGloballLogger()->pushlog(debugmsg); \
         rocket::Logger::GetGloballLogger()->log();}
     
 
 #define INFOLOG(str, ... ) \
     if(rocket::Logger::GetGloballLogger()->getLogLevel() >= rocket::Info)  \
-    {std::string infomsg = (rocket::LogEvent(rocket::LogLevel::Info)).toSting() + rocket::formatString(str,##__VA_ARGS__);\
+    {std::string infomsg = (rocket::LogEvent(rocket::LogLevel::Info)).toSting() +"["+std::string(__FILE__)+":"+std::to_string(__LINE__)+"]\t" + rocket::formatString(str,##__VA_ARGS__);\
     rocket::Logger::GetGloballLogger()->pushlog(infomsg); \
     rocket::Logger::GetGloballLogger()->log();}
 
 #define ERRORLOG(str, ... ) \
     if(rocket::Logger::GetGloballLogger()->getLogLevel() >= rocket::Error)  \
-    {std::string errormsg = (rocket::LogEvent(rocket::LogLevel::Error)).toSting() + rocket::formatString(str,##__VA_ARGS__);\
+    {std::string errormsg = (rocket::LogEvent(rocket::LogLevel::Error)).toSting() +"["+std::string(__FILE__)+":"+std::to_string(__LINE__)+"]\t" + rocket::formatString(str,##__VA_ARGS__);\
     rocket::Logger::GetGloballLogger()->pushlog(errormsg); \
     rocket::Logger::GetGloballLogger()->log();}
 
@@ -60,6 +64,7 @@ public:
     static void SetGetGloballLogger();
     void log();
 private:
+    Mutex m_mutex = Mutex();
     LogLevel m_set_level;
     std::queue<std::string> m_buffer;
 };
