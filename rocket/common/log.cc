@@ -73,8 +73,7 @@ std::string LogEvent::toSting()
     std::stringstream ss;
     ss  << "[" << LogLevelToString(m_level) << "]\t"
         << "[" << time_str << "]\t"
-        << "[" << m_pid << ":" << m_thread_id << "]\t"
-        << "[" << std::string(__FILE__) <<":"<< __LINE__ << "]\t";
+        << "[" << m_pid << ":" << m_thread_id << "]\t";
 
     return ss.str();
 }
