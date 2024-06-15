@@ -24,4 +24,15 @@ pid_t getThreadId()
     return syscall(SYS_gettid);
 }
 
+int64_t getNowMs() {
+    timeval val;
+    gettimeofday(&val, NULL);
+    return val.tv_sec * 1000 + val.tv_usec / 1000;
+}
+
+int32_t getInt32FromNetByte(const char* buf) {
+    int32_t re;
+    memcpy(&re, buf, sizeof(re));
+    return ntohl(re);
+}
 }
