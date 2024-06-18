@@ -9,7 +9,7 @@ namespace rocket {
 // 将 message 对象转化为字节流，写入到 buffer
 void TinyPBCoder::encode(std::vector<AbstractProtocol::s_ptr>& messages, TcpBuffer::s_ptr out_buffer) {
     for (auto &i : messages) {
-        std::shared_ptr<TinyPBProtocol> msg = std::dynamic_pointer_cast<TinyPBProtocol>(i);
+        std::shared_ptr<TinyPBProtocol> msg = std::dynamic_pointer_cast<TinyPBProtocol>(i);//用了类型抓换
         int len = 0;
         const char* buf = encodeTinyPB(msg, len);
         if (buf != NULL && len != 0) {
