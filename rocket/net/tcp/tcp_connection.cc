@@ -4,7 +4,7 @@
 //#include "rocket/net/fd_event_group.h"
 //#include "rocket/net/coder/string_coder.h"
 #include "rocket/net/coder/tinypb_coder.h"
-#include "rocket/net/coder/tintpb_protocol.h"
+#include "rocket/net/coder/tinypb_protocol.h"
 namespace rocket {
 
 TcpConnection::TcpConnection(EventLoop* eventloop, int fd, int buffer_size, NetAddr::s_ptr peer_addr, 
@@ -20,6 +20,7 @@ TcpConnection::TcpConnection(EventLoop* eventloop, int fd, int buffer_size, NetA
 
     if (m_connection_type == TcpConnectionByServer) {
         listenRead();
+        m_dispatch = std::make_shared<RpcDispathcher>();
     }
 
 }
@@ -94,7 +95,6 @@ void TcpConnection::onRead() {
 void TcpConnection::execute() {
     if (m_connection_type == TcpConnectionByServer) {
         // 将 RPC 请求执行业务逻辑， 获取 RPC 逻辑， 再把 RPC 响应发送回去
-
         std::vector<AbstractProtocol::s_ptr> result;
         std::vector<AbstractProtocol::s_ptr> reply_messages;
         m_coder->decode(result, m_in_buffer);
@@ -106,6 +106,7 @@ void TcpConnection::execute() {
             // message->m_pb_data = "hello. this is rocket rpc test data";
             // message->m_msg_id = result[i]->m_msg_id;
            // RpcDispatcher::GetRpcDispatcher()->dispatch(result[i], message, this); 
+            m_dispatch->dispatch(result[i],message,this);
             reply_messages.push_back(message);
         }
         

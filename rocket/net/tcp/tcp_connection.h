@@ -10,7 +10,7 @@
 #include "rocket/net/io_thread.h"
 #include "rocket/net/coder/abstract_coder.h"
 #include "rocket/net/coder/abstract_protocol.h"
-//#include "rocket/net/rpc/rpc_dispatcher.h"
+#include "rocket/net/rpc/rpc_dispatcher.h"
 
 namespace rocket {
 
@@ -25,6 +25,9 @@ enum TcpConnetionType {
     TcpConnectionByServer = 1,  // 作为服务端使用，代表跟对端客户端的连接
     TcpConnectionByClient = 2,  // 作为客户端使用，代表跟对端服务端的连接
 };
+
+
+class RpcDispathcher;
 
 class TcpConnection {
 
@@ -89,6 +92,7 @@ private:
     
     std::map<std::string, std::function<void(AbstractProtocol::s_ptr)> > m_read_dones;
 
+    std::shared_ptr<RpcDispathcher> m_dispatch;
 };
 
 };
