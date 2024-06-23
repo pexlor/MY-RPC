@@ -106,7 +106,7 @@ void TcpConnection::execute() {
             // message->m_pb_data = "hello. this is rocket rpc test data";
             // message->m_msg_id = result[i]->m_msg_id;
            // RpcDispatcher::GetRpcDispatcher()->dispatch(result[i], message, this); 
-            m_dispatch->dispatch(result[i],message);
+            m_dispatch->dispatch(result[i],message,this);
             reply_messages.push_back(message);
         }
         

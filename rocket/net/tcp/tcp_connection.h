@@ -26,6 +26,9 @@ enum TcpConnetionType {
     TcpConnectionByClient = 2,  // 作为客户端使用，代表跟对端服务端的连接
 };
 
+
+class RpcDispathcher;
+
 class TcpConnection {
 
 public:
