@@ -54,6 +54,7 @@
         "iostream": "cpp",
         "istream": "cpp",
         "sstream": "cpp",
-        "cstring": "cpp"
+        "cstring": "cpp",
+        "unordered_set": "cpp"
     }
 }
