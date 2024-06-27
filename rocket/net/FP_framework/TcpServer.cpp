@@ -46,7 +46,6 @@ void TcpServer::closeconnection(spConnection  conn)
         std::lock_guard<std::mutex> gd(mmutex);
         conns_.erase(conn->fd());
     }
-    
     //delete conn;
 }
 

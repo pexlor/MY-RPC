@@ -24,7 +24,6 @@ private:
     std::vector<std::unique_ptr<EventLoop>> subloops_;
     ThreadPoll threadpoll_;//IO线程池
     
-    
 
     std::mutex mmutex;
     std::map<int ,spConnection> conns_;//管理连接线程
