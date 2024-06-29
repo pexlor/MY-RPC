@@ -46,7 +46,6 @@ int main(int argc , char * argv[])
     std::shared_ptr<OrderImpl> service = std::make_shared<OrderImpl>();
     RPCServer rpcServer(argv[1],atoi(argv[2]),3,3);
     rpcServer.RegisterRpcService(service);
-    
     rpcServer.Start();
     return 0;
 }

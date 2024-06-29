@@ -99,7 +99,6 @@ install:
 		&& cp $(PATH_RPC)/*.h $(PATH_INSTALL_INC_RPC) \
 		&& cp $(LIB_OUT) $(PATH_INSTALL_LIB_ROOT)/
 
-
 # uninstall
 uninstall:
 	rm -rf $(PATH_INSTALL_INC_ROOT)/rocket && rm -f $(PATH_INSTALL_LIB_ROOT)/librocket.a
