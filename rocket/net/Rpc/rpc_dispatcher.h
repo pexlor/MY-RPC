@@ -1,22 +1,22 @@
 #pragma once
-#include "rocket/net/coder/abstract_protocol.h"
+#include "rocket/net/Rpc/coder/abstract_protocol.h"
 #include <map>
 #include <memory>
 #include <google/protobuf/service.h>
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/message.h>
-#include "rocket/net/coder/tinypb_protocol.h"
+#include "tinypb_protocol.h"
 #include "rocket/common/log.h"
 #include "rocket/common/error_code.h"
-#include "rocket/net/rpc/rpc_controller.h"
-#include "rocket/net/tcp/tcp_connection.h"
+#include "rpc_controller.h"
+
 namespace rocket{
 class TcpConnection;
 
 class RpcDispatcher{ //RPC分发器
 public:
     static RpcDispatcher* GetRpcDispatcher();
-    typedef std::shared_ptr<google::protobuf::Service> service_ptr;
+    using service_ptr=std::shared_ptr<google::protobuf::Service> ;
     void dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s_ptr response,TcpConnection* connection);
     void registerService(service_ptr service);
 private:

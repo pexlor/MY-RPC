@@ -1,4 +1,4 @@
-#include "rocket/net/rpc/rpc_controller.h"
+#include "rocket/net/Rpc/rpc_controller.h"
 
 namespace rocket
 {
@@ -10,8 +10,8 @@ void RpcController::Reset()
     m_req_id = "";
     m_is_failed = false;
     m_is_cancled = false;
-    m_local_addr = nullptr;
-    m_peer_addr = nullptr;
+    //m_local_addr = nullptr;
+   // m_peer_addr = nullptr;
     m_timeout = 1000;
 }
 
@@ -67,7 +67,7 @@ void RpcController::SetReqId(const std::string& req_id) {
 std::string RpcController::GetReqId() {
     return m_req_id;
 }
-
+/*
 void RpcController::SetLocalAddr(NetAddr::s_ptr addr) {
     m_local_addr = addr;
 }
@@ -76,6 +76,7 @@ NetAddr::s_ptr RpcController::GetLocalAddr() {
     return m_local_addr;
 }
 
+
 void RpcController::SetPeerAddr(NetAddr::s_ptr addr) {
     m_peer_addr = addr;
 }
@@ -83,7 +84,7 @@ void RpcController::SetPeerAddr(NetAddr::s_ptr addr) {
 NetAddr::s_ptr RpcController::GetPeerAddr() {
     return m_peer_addr;
 }
-
+*/
 void RpcController::SetTimeout(int timeout) {
     m_timeout = timeout;
 }

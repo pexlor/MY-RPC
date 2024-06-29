@@ -1,9 +1,12 @@
 
 #pragma once
-#include "rocket/net/coder/abstract_protocol.h"
+
+#include "abstract_protocol.h"
 #include <string>
 namespace rocket
 {
+
+//自定义RPC协议类
 
 struct TinyPBProtocol : public AbstractProtocol{
 
@@ -21,7 +24,6 @@ public:
     std::string m_err_info;//错误信息
     std::string m_pb_data; //序列化数据
     int32_t m_check_sum = 0;//校验和
-
     bool parse_success = false;
 };
 

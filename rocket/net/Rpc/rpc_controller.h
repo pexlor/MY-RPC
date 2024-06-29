@@ -1,7 +1,7 @@
 #pragma once
 #include <google/protobuf/service.h>
 #include <google/protobuf/stubs/callback.h>
-#include "rocket/net/tcp/net_addr.h"
+//#include "rocket/net/tcp/net_addr.h"
 
 namespace rocket
 {
@@ -23,10 +23,10 @@ public:
     std::string GetErrorInfo();
     void SetReqId(const std::string& req_id);
     std::string GetReqId();
-    void SetLocalAddr( NetAddr::s_ptr addr);
-    void SetPeerAddr( NetAddr::s_ptr addr);
-    NetAddr::s_ptr GetLocalAddr();
-    NetAddr::s_ptr GetPeerAddr();
+    //void SetLocalAddr( NetAddr::s_ptr addr);
+    //void SetPeerAddr( NetAddr::s_ptr addr);
+   // NetAddr::s_ptr GetLocalAddr();
+    //NetAddr::s_ptr GetPeerAddr();
     void SetTimeout(int timeout);
     int GetTimeout();
      
@@ -36,8 +36,8 @@ private:
     std::string m_req_id;
     bool m_is_failed = false;
     bool m_is_cancled = false;
-    NetAddr::s_ptr m_local_addr;
-    NetAddr::s_ptr m_peer_addr;
+    //NetAddr::s_ptr m_local_addr;
+    //NetAddr::s_ptr m_peer_addr;
 
     int m_timeout = 1000;
 }; // namespace rocket

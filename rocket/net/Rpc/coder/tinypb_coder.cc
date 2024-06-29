@@ -1,19 +1,19 @@
 #include <vector>
 #include <string.h>
 #include "arpa/inet.h"
-#include "rocket/net/coder/tinypb_coder.h"
+#include "rocket/net/Rpc/coder/tinypb_coder.h"
 #include "rocket/common/util.h"
 #include "rocket/common/log.h"
 namespace rocket {
 
 // 将 message 对象转化为字节流，写入到 buffer
-void TinyPBCoder::encode(std::vector<AbstractProtocol::s_ptr>& messages, TcpBuffer::s_ptr out_buffer) {
+void TinyPBCoder::encode(std::vector<AbstractProtocol::s_ptr>& messages, std::string& out_buffer) {
     for (auto &i : messages) {
         std::shared_ptr<TinyPBProtocol> msg = std::dynamic_pointer_cast<TinyPBProtocol>(i);//用了类型抓换
         int len = 0;
         const char* buf = encodeTinyPB(msg, len);
         if (buf != NULL && len != 0) {
-            out_buffer->writeToBuffer(buf, len);
+            out_buffer = std::string(buf);
         }
         if (buf) {
             free((void*)buf);
@@ -24,26 +24,26 @@ void TinyPBCoder::encode(std::vector<AbstractProtocol::s_ptr>& messages, TcpBuff
 }
 
 // 将 buffer 里面的字节流转换为 message 对象
-void TinyPBCoder::decode(std::vector<AbstractProtocol::s_ptr>& out_messages, TcpBuffer::s_ptr buffer) {
+void TinyPBCoder::decode(std::vector<AbstractProtocol::s_ptr>& out_messages, std::string& buffer) {
     while(1) {
         // 遍历 buffer，找到 PB_START，找到之后，解析出整包的长度。然后得到结束符的位置，判断是否为 PB_END
-        std::vector<char> tmp = buffer->m_buffer;
-        int start_index = buffer->readIndex();
+        const char* tmp = buffer.c_str();
+        int buffer_size = buffer.size();
+        int start_index = 0;
         int end_index = -1;
 
         int pk_len = 0;
         bool parse_success = false;
         int i = 0;
-        for (i = start_index; i < buffer->writeIndex(); ++i) {
+        for (i = start_index; i < buffer_size; ++i) {
             if (tmp[i] == TinyPBProtocol::PB_START) {
                 // 读下去四个字节。由于是网络字节序，需要转为主机字节序  
-                if (i + 1 < buffer->writeIndex()) {
+                if (i + 1 < buffer_size) {
                     pk_len = getInt32FromNetByte(&tmp[i+1]);
                     DEBUGLOG("get pk_len = %d", pk_len);
-
                     // 结束符的索引
                     int j = i + pk_len - 1;
-                    if (j >= buffer->writeIndex()) {
+                    if (j >= buffer_size) {
                         continue;
                     }
                     if (tmp[j] == TinyPBProtocol::PB_END) {
@@ -57,21 +57,21 @@ void TinyPBCoder::decode(std::vector<AbstractProtocol::s_ptr>& out_messages, Tcp
             }
         }
 
-        if (i >= buffer->writeIndex()) {
+        if (i >= buffer_size) {
             DEBUGLOG("decode end, read all buffer data");
             return;
         }
 
         if (parse_success) {
-            buffer->moveReadIndex(end_index - start_index + 1);
+            //buffer->moveReadIndex(end_index - start_index + 1);
             std::shared_ptr<TinyPBProtocol> message = std::make_shared<TinyPBProtocol>(); 
             message->m_pk_len = pk_len;
 
             int msg_id_len_index = start_index + sizeof(char) + sizeof(message->m_pk_len);
             if (msg_id_len_index >= end_index) {
-            message->parse_success = false;
-            ERRORLOG("parse error, msg_id_len_index[%d] >= end_index[%d]", msg_id_len_index, end_index);
-            continue;
+                message->parse_success = false;
+                ERRORLOG("parse error, msg_id_len_index[%d] >= end_index[%d]", msg_id_len_index, end_index);
+                continue;
             }
             message->m_msg_id_len = getInt32FromNetByte(&tmp[msg_id_len_index]);
             DEBUGLOG("parse msg_id_len=%d", message->m_msg_id_len);
@@ -132,8 +132,6 @@ void TinyPBCoder::decode(std::vector<AbstractProtocol::s_ptr>& out_messages, Tcp
         }
 
     }
-
-
 }
 
 
