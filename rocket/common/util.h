@@ -5,7 +5,7 @@
 #include <sys/time.h>
 #include <arpa/inet.h>
 #include <string.h>
-namespace rocket{
+
 
 pid_t getPid();
 
@@ -15,4 +15,3 @@ int64_t getNowMs();
 
 int32_t getInt32FromNetByte(const char* buf);
 
-}

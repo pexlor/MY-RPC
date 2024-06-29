@@ -13,8 +13,8 @@ void * fun(void*)
 
 int main()
 {
-    rocket::Config::SetGlobalConfig("/home/pexlor/Downloads/rpc/conf/rocket.xml");
-    rocket::Logger::SetGetGloballLogger();
+    Config::SetGlobalConfig("/home/pexlor/Downloads/rpc/conf/rocket.xml");
+    Logger::SetGetGloballLogger();
     pthread_t thread1;
     pthread_create(&thread1,NULL,&fun,NULL);
     pthread_t thread2;

@@ -1,10 +1,8 @@
-#ifndef ROCKET_NET_CODER_ABSTRACT_PROTOCOL_H
-#define ROCKET_NET_CODER_ABSTRACT_PROTOCOL_H
+#pragma once
 
 #include <memory>
 #include <string>
 
-namespace rocket {
 
 struct AbstractProtocol : public std::enable_shared_from_this<AbstractProtocol>{
 
@@ -18,6 +16,3 @@ public:
 
 };
 
-};
-
-#endif

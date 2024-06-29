@@ -1,6 +1,5 @@
 #include "log.h"
 
-namespace rocket {
 
 std::string LogLevelToString(LogLevel level)
 {
@@ -110,24 +109,13 @@ void Logger::pushlog(const std::string & msg)
 
 void Logger::log()
 {
-    std::queue<std::string> t_buffer;
-
-    {
-        ScopeMutex<Mutex> lock(m_mutex);
-        //DEBUGLOG("m_buffersize = %d",m_buffer.size()); 死锁了
-        t_buffer = m_buffer;
-        m_buffer.swap(t_buffer);
-        lock.unlock();
-    }
-
-    while(!t_buffer.empty())
-    {
-        
-        std::string msg = t_buffer.front();
-        msg += "\n";
-        t_buffer.pop();
+    ScopeMutex<Mutex> lock(m_mutex);
+    std::queue<std::string> tmp = m_buffer;
+    while (!tmp.empty()) {
+        std::string msg = tmp.front();
+        tmp.pop();
         printf(msg.c_str());
     }
-}
-
+    m_buffer.swap(tmp);
+    lock.unlock();
 }

@@ -3,8 +3,6 @@
 #include <google/protobuf/stubs/callback.h>
 //#include "rocket/net/tcp/net_addr.h"
 
-namespace rocket
-{
 
 class RpcController : public google::protobuf::RpcController{
 public:
@@ -42,4 +40,3 @@ private:
     int m_timeout = 1000;
 }; // namespace rocket
 
-}

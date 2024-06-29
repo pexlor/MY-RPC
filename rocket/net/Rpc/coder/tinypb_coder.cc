@@ -4,34 +4,40 @@
 #include "rocket/net/Rpc/coder/tinypb_coder.h"
 #include "rocket/common/util.h"
 #include "rocket/common/log.h"
-namespace rocket {
+
 
 // 将 message 对象转化为字节流，写入到 buffer
 void TinyPBCoder::encode(std::vector<AbstractProtocol::s_ptr>& messages, std::string& out_buffer) {
+    std::string result;
+    
     for (auto &i : messages) {
         std::shared_ptr<TinyPBProtocol> msg = std::dynamic_pointer_cast<TinyPBProtocol>(i);//用了类型抓换
         int len = 0;
         const char* buf = encodeTinyPB(msg, len);
+        
         if (buf != NULL && len != 0) {
-            out_buffer = std::string(buf);
+            std::string temp(buf,len);
+            //memcpy(&out_buffer, buf, len);
+            result.append(temp);
+            
         }
         if (buf) {
             free((void*)buf);
             buf = NULL;
         }
-
     }
+    out_buffer = result;
+    printf(" out buff:%d\n",out_buffer.size());
 }
 
 // 将 buffer 里面的字节流转换为 message 对象
 void TinyPBCoder::decode(std::vector<AbstractProtocol::s_ptr>& out_messages, std::string& buffer) {
+    int start_index = 0;
+    const char* tmp = buffer.c_str();
+    int buffer_size = buffer.size();
+    int end_index = -1;
     while(1) {
         // 遍历 buffer，找到 PB_START，找到之后，解析出整包的长度。然后得到结束符的位置，判断是否为 PB_END
-        const char* tmp = buffer.c_str();
-        int buffer_size = buffer.size();
-        int start_index = 0;
-        int end_index = -1;
-
         int pk_len = 0;
         bool parse_success = false;
         int i = 0;
@@ -50,6 +56,7 @@ void TinyPBCoder::decode(std::vector<AbstractProtocol::s_ptr>& out_messages, std
                         start_index = i;
                         end_index = j;
                         parse_success = true;
+                        DEBUGLOG("get end");
                         break;
                     }
                     
@@ -130,8 +137,9 @@ void TinyPBCoder::decode(std::vector<AbstractProtocol::s_ptr>& out_messages, std
 
             out_messages.push_back(message);
         }
-
+        start_index = end_index+1;
     }
+    DEBUGLOG("parse ok");
 }
 
 
@@ -143,9 +151,9 @@ const char* TinyPBCoder::encodeTinyPB(std::shared_ptr<TinyPBProtocol> message, i
     int pk_len = 2 + 24 + message->m_msg_id.length() + message->m_method_name.length() + message->m_err_info.length() + message->m_pb_data.length();
     DEBUGLOG("pk_len = %", pk_len);
 
-    char* buf = reinterpret_cast<char*>(malloc(pk_len));
+    char* buf = reinterpret_cast<char*>(malloc(pk_len+1));
     char* tmp = buf;
-
+    printf("pklen:%d\n",pk_len);
     *tmp = TinyPBProtocol::PB_START;
     tmp++;
 
@@ -206,9 +214,6 @@ const char* TinyPBCoder::encodeTinyPB(std::shared_ptr<TinyPBProtocol> message, i
     len = pk_len;
 
     DEBUGLOG("encode message[%s] success", message->m_msg_id.c_str());
-
     return buf;
 }
 
-
-};

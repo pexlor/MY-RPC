@@ -1,6 +1,6 @@
 #include "rocket/net/Rpc/rpc_dispatcher.h"
 
-namespace rocket{
+
 
 static RpcDispatcher* g_rpc_dispatcher = NULL;
 
@@ -43,7 +43,7 @@ void RpcDispatcher::dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s
         return;
     }
     google::protobuf::Message* req_msg = service->GetRequestPrototype(method).New();//获得请求消息原型
-
+    DEBUGLOG("start parse from string");
     //反序列
     if(!req_msg->ParseFromString(req_protocol->m_pb_data))
     {
@@ -54,8 +54,10 @@ void RpcDispatcher::dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s
         }
         return;
     }
-    INFOLOG("Get rpc request[%s]",req_msg->ShortDebugString().c_str());
 
+    DEBUGLOG("Get rpc request[%s]",req_msg->ShortDebugString().c_str());
+
+    DEBUGLOG("start parse from string");
     google::protobuf::Message* rsp_msg = service->GetResponsePrototype(method).New();
 
     RpcController rpcController;
@@ -64,10 +66,15 @@ void RpcDispatcher::dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s
     //rpcController.SetPeerAddr(connection->getPeerAddr());
     rpcController.SetReqId(req_protocol->m_msg_id);
 
+    DEBUGLOG("start call method");
     service->CallMethod(method,&rpcController,req_msg,rsp_msg,NULL);
+    DEBUGLOG("end call method");
     
     rsp_protocol->m_method_name = req_protocol->m_method_name;
     rsp_protocol->m_msg_id = req_protocol->m_msg_id;
+
+    
+
     if(!rsp_msg->SerializeToString(&(rsp_protocol->m_pb_data)))
     {
         setTinyPBError(rsp_protocol,ERROR_FAILED_SERIALIZE,"parse sevice failed serialize");
@@ -77,10 +84,10 @@ void RpcDispatcher::dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s
         }
         return;
     }
-    rsp_protocol->m_err_code = 0;
-    INFOLOG("%s | dispatch success, request[%s], response[%s]", 
-        req_protocol->m_msg_id.c_str(), req_msg->ShortDebugString().c_str(), rsp_msg->ShortDebugString().c_str());
 
+    rsp_protocol->m_err_code = 0;
+    DEBUGLOG("%s | dispatch success, request[%s], response[%s]", 
+        req_protocol->m_msg_id.c_str(), req_msg->ShortDebugString().c_str(), rsp_msg->ShortDebugString().c_str());
     if (req_msg != NULL) {
         delete req_msg;
         req_msg = NULL;
@@ -126,4 +133,3 @@ RpcDispatcher* RpcDispatcher::GetRpcDispatcher()
     return g_rpc_dispatcher;
 }
 
-}

@@ -3,7 +3,7 @@
 
 #include <pthread.h>
 
-namespace rocket {
+
 
 template <class T>
 class ScopeMutex {
@@ -67,6 +67,6 @@ private:
     pthread_mutex_t m_mutex;
 };
 
-};
+
 
 #endif

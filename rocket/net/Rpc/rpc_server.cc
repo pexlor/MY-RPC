@@ -26,6 +26,8 @@ RPCServer::RPCServer(const char *ip ,const uint16_t port,int threadnum,int workt
     tcpserver_.setonmessage(std::bind(&RPCServer::HandleMessage,this,std::placeholders::_1,std::placeholders::_2));
     tcpserver_.setsendcomplate(std::bind(&RPCServer::HandleSendComplate,this,std::placeholders::_1));
     tcpserver_.setepolltimeout(std::bind(&RPCServer::HandleEpollTimeout,this,std::placeholders::_1));
+
+    m_coder = new TinyPBCoder();
 }
 
 RPCServer::~RPCServer()
@@ -77,26 +79,29 @@ void RPCServer::HandleMessage(spConnection conn,std::string &message)//业务处
 
 void RPCServer::OnMessage(spConnection conn,std::string &message)
 {
-    std::cout << message; 
-    std::vector<rocket::AbstractProtocol::s_ptr> result;
-    std::vector<rocket::AbstractProtocol::s_ptr> reply_messages;
+    std::cout << "recevie message\n"; 
+    std::vector<AbstractProtocol::s_ptr> result;
+    std::vector<AbstractProtocol::s_ptr> reply_messages;
     m_coder->decode(result, message);//解码
+    //std::cout << "message decode\t" << result.size() << std::endl; 
     for (size_t i = 0; i < result.size(); i++) {
         // 针对每一个请求，调用 Rpc 方法，获取响应 message
         // 将响应 message 放入到发送缓冲区，监听可写事件回包
         //INFOLOG("successfully get request[%s] from client [%s]", result[i]->m_msg_id.c_str(), m_peer_addr->toString().c_str());
-        std::shared_ptr<rocket::TinyPBProtocol> message = std::make_shared<rocket::TinyPBProtocol>();
+        std::shared_ptr<TinyPBProtocol> message = std::make_shared<TinyPBProtocol>();
         // message->m_pb_data = "hello. this is rocket rpc test data";
         // message->m_msg_id = result[i]->m_msg_id;
-        rocket::RpcDispatcher::GetRpcDispatcher()->dispatch(result[i], message, NULL); //处理请求
+        RpcDispatcher::GetRpcDispatcher()->dispatch(result[i], message, NULL); //处理请求
         reply_messages.push_back(message);
     }
+    DEBUGLOG("dispatch ok");
     std::string m_out_buffer;
     m_coder->encode(reply_messages, m_out_buffer);
+    DEBUGLOG("encode ok");
     // 监听写回调函数
     //listenWrite();
     conn->send(m_out_buffer.c_str(),m_out_buffer.size());
-    
+    std::cout << "message send\n";
 }
 
 void RPCServer::HandleSendComplate(spConnection conn)
@@ -111,5 +116,5 @@ void RPCServer::HandleEpollTimeout(EventLoop *loop)
 
 void RPCServer::RegisterRpcService(std::shared_ptr<google::protobuf::Service> service)
 {
-    rocket::RpcDispatcher::GetRpcDispatcher()->registerService(service); //注册服务
+    RpcDispatcher::GetRpcDispatcher()->registerService(service); //注册服务
 }

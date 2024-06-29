@@ -22,7 +22,7 @@ public:
                        ::google::protobuf::Closure* done) {
 
         //APPDEBUGLOG("start sleep 5s");
-        sleep(5);
+        //sleep(5);
         //APPDEBUGLOG("end sleep 5s");
         if (request->price() < 10) {
             response->set_ret_code(-1);
@@ -41,8 +41,8 @@ int main(int argc , char * argv[])
         printf("usgae :./tecepoll ip port\n");
         return -1;
     }
-    rocket::Config::SetGlobalConfig("/home/pexlor/Downloads/rpc/conf/rocket.xml");
-    rocket::Logger::SetGetGloballLogger();
+    Config::SetGlobalConfig("/home/pexlor/Downloads/reactor/conf/rocket.xml");
+    Logger::SetGetGloballLogger();
     std::shared_ptr<OrderImpl> service = std::make_shared<OrderImpl>();
     RPCServer rpcServer(argv[1],atoi(argv[2]),3,3);
     rpcServer.RegisterRpcService(service);

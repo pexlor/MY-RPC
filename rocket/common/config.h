@@ -2,7 +2,7 @@
 #include <tinyxml/tinyxml.h>
 #include <map>
 #include <string>
-namespace rocket {
+
 
 class Config {
 public:
@@ -19,4 +19,3 @@ private:
 };
 
 
-}

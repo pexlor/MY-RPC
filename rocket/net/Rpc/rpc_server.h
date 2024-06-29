@@ -17,7 +17,7 @@ class RPCServer
 private:
     TcpServer tcpserver_;
     ThreadPoll threadpoll_;
-    rocket::AbstractCoder* m_coder {NULL};
+    AbstractCoder* m_coder {NULL};
 public:
     RPCServer(const char * ip ,const uint16_t port,int threadnum,int workthreadnum);
     ~RPCServer();

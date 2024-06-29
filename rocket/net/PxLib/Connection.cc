@@ -93,6 +93,7 @@ void Connection::onmessagecallback()
     {
         bzero(buffer,sizeof(buffer));
         ssize_t nread = recv(fd(),buffer,sizeof(buffer)-1,0);
+        printf("rece nread %d\n",nread);
         if(nread > 0)
         {
             inputbuffer_.append(buffer,nread);

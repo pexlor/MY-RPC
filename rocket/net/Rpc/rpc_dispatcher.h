@@ -10,7 +10,7 @@
 #include "rocket/common/error_code.h"
 #include "rpc_controller.h"
 
-namespace rocket{
+
 class TcpConnection;
 
 class RpcDispatcher{ //RPC分发器
@@ -26,4 +26,3 @@ private:
 
 };
 
-}

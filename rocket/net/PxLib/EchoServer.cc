@@ -82,10 +82,10 @@ int a = 0;
 void EchoServer::OnMessage(spConnection conn,std::string &message)
 {
     std::cout << message; 
-    Http http(message);
-    std::string re = http.Respond();
+    //Http http(message);
+    //std::string re = http.Respond();
     //std::cout <<"re = " << http.Size_ <<std::endl;
-    conn->send(re.c_str(),re.size());
+    //conn->send(re.c_str(),re.size());
     // if(a==0)
     // {
     //     conn->send(head_buf,sizeof(head_buf));

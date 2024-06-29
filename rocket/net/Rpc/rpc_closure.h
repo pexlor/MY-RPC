@@ -9,7 +9,7 @@
 //#include "rocket/common/exception.h"
 //#include "rocket/net/rpc/rpc_interface.h"
 
-namespace rocket {
+
 
 class RpcClosure : public google::protobuf::Closure {
  public:
@@ -68,6 +68,6 @@ class RpcClosure : public google::protobuf::Closure {
 };
 
 
-}
+
 
 

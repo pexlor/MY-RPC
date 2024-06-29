@@ -15,7 +15,7 @@
     std::string name##_str = std::string(name##_node->GetText());\
 
 
-namespace rocket {
+
 
     static Config* g_config = nullptr;
 
@@ -61,5 +61,5 @@ namespace rocket {
 
 
 
-}
+
 

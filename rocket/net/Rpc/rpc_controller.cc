@@ -1,7 +1,6 @@
 #include "rocket/net/Rpc/rpc_controller.h"
 
-namespace rocket
-{
+
 
 void RpcController::Reset()
 {
@@ -94,5 +93,4 @@ int RpcController::GetTimeout() {
 }
 
 
-}; // namespace rocket
 

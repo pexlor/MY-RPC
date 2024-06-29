@@ -9,7 +9,6 @@
 #include "config.h"
 #include "rocket/common/mutex.h"
 
-namespace rocket {
 
 template<typename... Args>
 std::string formatString(const char* str,Args&&... args)
@@ -28,23 +27,23 @@ std::string formatString(const char* str,Args&&... args)
 
 
 #define DEBUGLOG(str, ... ) \
-        if(rocket::Logger::GetGloballLogger()->getLogLevel() >= rocket::Debug)  \
-        {std::string debugmsg = (rocket::LogEvent(rocket::LogLevel::Debug)).toSting()+"["+std::string(__FILE__)+":"+std::to_string(__LINE__)+"]\t" + rocket::formatString(str,##__VA_ARGS__);\
-        rocket::Logger::GetGloballLogger()->pushlog(debugmsg); \
-        rocket::Logger::GetGloballLogger()->log();}
+        if(Logger::GetGloballLogger()->getLogLevel() >=  Debug)  \
+        {std::string debugmsg = ( LogEvent( LogLevel::Debug)).toSting()+"["+std::string(__FILE__)+":"+std::to_string(__LINE__)+"]\t" +  formatString(str,##__VA_ARGS__)+"\n";\
+         Logger::GetGloballLogger()->pushlog(debugmsg); \
+         Logger::GetGloballLogger()->log();}
     
 
 #define INFOLOG(str, ... ) \
-    if(rocket::Logger::GetGloballLogger()->getLogLevel() >= rocket::Info)  \
-    {std::string infomsg = (rocket::LogEvent(rocket::LogLevel::Info)).toSting() +"["+std::string(__FILE__)+":"+std::to_string(__LINE__)+"]\t" + rocket::formatString(str,##__VA_ARGS__);\
-    rocket::Logger::GetGloballLogger()->pushlog(infomsg); \
-    rocket::Logger::GetGloballLogger()->log();}
+    if( Logger::GetGloballLogger()->getLogLevel() >=  Info)  \
+    {std::string infomsg = ( LogEvent( LogLevel::Info)).toSting() +"["+std::string(__FILE__)+":"+std::to_string(__LINE__)+"]\t" +  formatString(str,##__VA_ARGS__)+"\n";\
+     Logger::GetGloballLogger()->pushlog(infomsg); \
+     Logger::GetGloballLogger()->log();}
 
 #define ERRORLOG(str, ... ) \
-    if(rocket::Logger::GetGloballLogger()->getLogLevel() >= rocket::Error)  \
-    {std::string errormsg = (rocket::LogEvent(rocket::LogLevel::Error)).toSting() +"["+std::string(__FILE__)+":"+std::to_string(__LINE__)+"]\t" + rocket::formatString(str,##__VA_ARGS__);\
-    rocket::Logger::GetGloballLogger()->pushlog(errormsg); \
-    rocket::Logger::GetGloballLogger()->log();}
+    if( Logger::GetGloballLogger()->getLogLevel() >=  Error)  \
+    {std::string errormsg = ( LogEvent( LogLevel::Error)).toSting() +"["+std::string(__FILE__)+":"+std::to_string(__LINE__)+"]\t" +  formatString(str,##__VA_ARGS__) + "\n";\
+     Logger::GetGloballLogger()->pushlog(errormsg); \
+     Logger::GetGloballLogger()->log();}
 
 enum LogLevel {
     Unknown = 0,
@@ -88,4 +87,4 @@ private:
 };
 
 
-}
+

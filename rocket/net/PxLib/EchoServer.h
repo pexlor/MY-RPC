@@ -3,7 +3,6 @@
 #include "EventLoop.h"
 #include "Connection.h"
 #include "ThreadPoll.h"
-#include "Http.h"
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <signal.h>

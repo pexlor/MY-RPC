@@ -3,8 +3,6 @@
 
 #include "abstract_protocol.h"
 #include <string>
-namespace rocket
-{
 
 //自定义RPC协议类
 
@@ -27,7 +25,3 @@ public:
     bool parse_success = false;
 };
 
-char TinyPBProtocol::PB_START = 0x02;
-char TinyPBProtocol::PB_END = 0x03;
-
-} // namespace rocket

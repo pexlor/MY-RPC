@@ -72,6 +72,7 @@ void Channel::handleevent()
         readcallback_();
     }else if(revents() & EPOLLOUT)
     {
+        std::cout << "int epoll out\n";
         writecallback_();
     }else
     {

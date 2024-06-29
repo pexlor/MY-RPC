@@ -30,6 +30,7 @@
 #include <arpa/inet.h>
 #include <time.h>
 
+
 int main(int argc, char *argv[])
 {
     if (argc != 3)
@@ -38,6 +39,8 @@ int main(int argc, char *argv[])
         printf("example:./client 192.168.150.128 5085\n\n"); 
         return -1;
     }
+    Config::SetGlobalConfig("/home/pexlor/Downloads/rpc/conf/rocket.xml");
+    Logger::SetGetGloballLogger();
 
     int sockfd;
     struct sockaddr_in servaddr;
@@ -55,41 +58,31 @@ int main(int argc, char *argv[])
         printf("connect(%s:%s) failed.\n",argv[1],argv[2]); close(sockfd);  return -1;
     }
 
-    std::shared_ptr<rocket::TinyPBProtocol> message = std::make_shared<rocket::TinyPBProtocol>();
+    std::vector<AbstractProtocol::s_ptr> messages;
+    std::shared_ptr<TinyPBProtocol> message = std::make_shared<TinyPBProtocol>();
     // message->info = "hello rocket!";
     message->m_msg_id = "99998888";
-    message->m_pb_data = "test pb data";
+    //message->m_pb_data = "test pb data";
     makeOrderRequest request;
     request.set_price(100);
     request.set_goods("apple");
     if (!request.SerializeToString(&(message->m_pb_data))) {
         ERRORLOG("serialize error");
-        return;
+        return -1;
     }
     message->m_method_name = "Order.makeOrder";
+    messages.push_back(message);
+    AbstractCoder* m_coder = new TinyPBCoder();
+    printf("messages size: %d\n",messages.size());
+    std::string out_buf;
+    m_coder->encode(messages,out_buf);
+    printf("encode ok %d\n",out_buf.size());
+    send(sockfd,out_buf.c_str(),out_buf.size(),0);
+    printf("send ok\n");
 
-    client.writeMessage(message, [request](rocket::AbstractProtocol::s_ptr msg_ptr) {
-        DEBUGLOG("send message success request[%s]", request.ShortDebugString().c_str());
-    });
-
-    std::string msg = "99998888";
-    client.readMessage(msg, [](rocket::AbstractProtocol::s_ptr msg_ptr) {
-        // DEBUGLOG("send message success");
-        std::shared_ptr<rocket::TinyPBProtocol> message = std::dynamic_pointer_cast<rocket::TinyPBProtocol>(msg_ptr);
-        DEBUGLOG("msg_id [%s], get response %s", message->m_msg_id.c_str(), message->m_pb_data.c_str());
-
-        makeOrderResponse response;
-        if (!response.ParseFromString(message->m_pb_data)) {
-            ERRORLOG("deserialize error");
-            return;
-        }
-
-        DEBUGLOG("get response success, response[%s]", response.ShortDebugString().c_str());
-
-    });
-
+    recv(sockfd,buf,1024,0);
     
-
+    printf("recv:%s\n",buf);
     /*
     for (int ii=0;ii<10;ii++)
     {

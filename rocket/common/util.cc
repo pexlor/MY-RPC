@@ -1,6 +1,6 @@
 #include "util.h"
 
-namespace rocket{
+
 
 static int g_pid = 0;
 
@@ -34,5 +34,4 @@ int32_t getInt32FromNetByte(const char* buf) {
     int32_t re;
     memcpy(&re, buf, sizeof(re));
     return ntohl(re);
-}
 }
