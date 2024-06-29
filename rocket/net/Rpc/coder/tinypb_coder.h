@@ -17,10 +17,8 @@ public:
 
     TinyPBCoder() {}
     ~TinyPBCoder() {}
-
 private:
     const char* encodeTinyPB(std::shared_ptr<TinyPBProtocol> message, int &len);
-
 };
 
 };

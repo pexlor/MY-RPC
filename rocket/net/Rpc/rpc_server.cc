@@ -80,7 +80,7 @@ void RPCServer::OnMessage(spConnection conn,std::string &message)
     std::cout << message; 
     std::vector<rocket::AbstractProtocol::s_ptr> result;
     std::vector<rocket::AbstractProtocol::s_ptr> reply_messages;
-    m_coder->decode(result, message);
+    m_coder->decode(result, message);//解码
     for (size_t i = 0; i < result.size(); i++) {
         // 针对每一个请求，调用 Rpc 方法，获取响应 message
         // 将响应 message 放入到发送缓冲区，监听可写事件回包
@@ -88,7 +88,7 @@ void RPCServer::OnMessage(spConnection conn,std::string &message)
         std::shared_ptr<rocket::TinyPBProtocol> message = std::make_shared<rocket::TinyPBProtocol>();
         // message->m_pb_data = "hello. this is rocket rpc test data";
         // message->m_msg_id = result[i]->m_msg_id;
-        rocket::RpcDispatcher::GetRpcDispatcher()->dispatch(result[i], message, NULL); 
+        rocket::RpcDispatcher::GetRpcDispatcher()->dispatch(result[i], message, NULL); //处理请求
         reply_messages.push_back(message);
     }
     std::string m_out_buffer;
@@ -96,7 +96,7 @@ void RPCServer::OnMessage(spConnection conn,std::string &message)
     // 监听写回调函数
     //listenWrite();
     conn->send(m_out_buffer.c_str(),m_out_buffer.size());
-
+    
 }
 
 void RPCServer::HandleSendComplate(spConnection conn)
