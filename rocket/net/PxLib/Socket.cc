@@ -110,3 +110,13 @@ int Socket::accept(InetAddress& clientaddr)
     clientaddr.setaddr(peeraddr);
     return clientfd;
 }
+
+int Socket::connect(InetAddress& clientaddr)
+{
+    if(::connect(fd_, (struct sockaddr *)clientaddr.addr(),sizeof(struct sockaddr_in))!=-1)
+    {
+        return 1;
+    }
+    return -1;
+
+}

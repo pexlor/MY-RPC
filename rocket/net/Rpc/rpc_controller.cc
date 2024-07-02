@@ -59,11 +59,11 @@ std::string RpcController::GetErrorInfo() {
     return m_error_info;
 }
 
-void RpcController::SetReqId(const std::string& req_id) {
+void RpcController::SetMsgId(const std::string& req_id) {
     m_req_id  = req_id;
 }
 
-std::string RpcController::GetReqId() {
+std::string RpcController::GetMsgId() {
     return m_req_id;
 }
 /*

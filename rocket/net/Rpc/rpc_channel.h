@@ -1,13 +1,11 @@
 
-/*
-#ifndef ROCKET_NET_RPC_RPC_CHANNEL_H
-#define ROCKET_NET_RPC_RPC_CHANNEL_H
+#pragma once
 
 #include <memory>
 #include <google/protobuf/service.h>
-
-
-namespace rocket {
+#include "rocket/net/PxLib/InetAddress.h"
+#include "rocket/net/PxLib/EventLoop.h"
+#include "rocket/net/PxLib/Acceptor.h"
 
 #define NEWMESSAGE(type, var_name) \
     std::shared_ptr<type> var_name = std::make_shared<type>(); \
@@ -34,12 +32,12 @@ public:
     using message_s_ptr = std::shared_ptr<google::protobuf::Message>;
     using closure_s_ptr = std::shared_ptr<google::protobuf::Closure>;
 
-    RpcChannel(NetAddr::s_ptr peer_addr);
+    RpcChannel(const char * ip ,uint16_t port);
 
     ~RpcChannel();
 
     void Init(controller_s_ptr controller, message_s_ptr req, message_s_ptr rsp, closure_s_ptr done);
-
+    
     void CallMethod(const google::protobuf::MethodDescriptor* method, 
                             google::protobuf::RpcController* controller, const google::protobuf::Message* request,
                             google::protobuf::Message* response, google::protobuf::Closure* done);
@@ -52,13 +50,13 @@ public:
 
     google::protobuf::Closure* GetClosure();
 
-    TcpClient* GetTcpClient();
+    //TcpClient* GetTcpClient();
 
-    TimerEvent::s_ptr GetTimerEvnet();
+    //TimerEvent::s_ptr GetTimerEvnet();
 
 private:
-    NetAddr::s_ptr m_peer_addr {nullptr};
-    NetAddr::s_ptr m_local_addr {nullptr};
+    InetAddress m_peer_addr ;
+    InetAddress m_local_addr ;
 
     controller_s_ptr m_controller {nullptr};
     message_s_ptr m_request {nullptr};
@@ -67,13 +65,16 @@ private:
 
     bool m_is_init {false};
 
-    TcpClient::s_ptr m_client;
+    //std::unique_ptr<EventLoop> m_loop;
+    //Acceptor acceptor_;//接收线程
 
-    TimerEvent::s_ptr m_timer_event;
+    Socket servsock_;
+    //Channel acceptchannel_;
+
+   // TcpClient::s_ptr m_client;
+
+   // TimerEvent::s_ptr m_timer_event;
 
 };
 
-};
 
-#endif
-*/

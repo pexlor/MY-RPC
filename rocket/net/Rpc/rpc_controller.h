@@ -19,8 +19,8 @@ public:
     void SetError(int32_t error_code,const std::string error_info);
     int32_t GetErrorCode();
     std::string GetErrorInfo();
-    void SetReqId(const std::string& req_id);
-    std::string GetReqId();
+    void SetMsgId(const std::string& req_id);
+    std::string GetMsgId();
     //void SetLocalAddr( NetAddr::s_ptr addr);
     //void SetPeerAddr( NetAddr::s_ptr addr);
    // NetAddr::s_ptr GetLocalAddr();
