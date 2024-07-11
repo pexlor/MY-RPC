@@ -20,5 +20,5 @@ PRC自定义协议协议
 
 后续的更新：
 
-计划：使用io_uring 协程 zookeeper
+计划：使用io_uring 协程 zookeeper 动态线程池
 
