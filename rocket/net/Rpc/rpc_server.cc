@@ -91,7 +91,7 @@ void RPCServer::OnMessage(spConnection conn,std::string &message)
         std::shared_ptr<TinyPBProtocol> message = std::make_shared<TinyPBProtocol>();
         // message->m_pb_data = "hello. this is rocket rpc test data";
         // message->m_msg_id = result[i]->m_msg_id;
-        RpcDispatcher::GetRpcDispatcher()->dispatch(result[i], message, NULL); //处理请求
+        RpcDispatcher::GetRpcDispatcher()->dispatch(result[i], message); //处理请求
         reply_messages.push_back(message);
     }
     DEBUGLOG("dispatch ok");

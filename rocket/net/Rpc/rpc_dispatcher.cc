@@ -67,7 +67,7 @@ void RpcDispatcher::dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s
     //IPNetAddr::s_ptr local_addr = std::make_shared<IPNetAddr>("127.0.0.1",1234);
     //rpcController.SetLocalAddr(connection->getLocalAddr());
     //rpcController.SetPeerAddr(connection->getPeerAddr());
-    rpcController.SetReqId(req_protocol->m_msg_id);
+    rpcController.SetMsgId(req_protocol->m_msg_id);
 
     DEBUGLOG("start call method");
     service->CallMethod(method,&rpcController,req_msg,rsp_msg,NULL);
