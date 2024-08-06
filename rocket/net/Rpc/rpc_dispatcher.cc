@@ -1,6 +1,8 @@
 #include "rocket/net/Rpc/rpc_dispatcher.h"
 
-
+/**
+ * 
+*/
 
 static RpcDispatcher* g_rpc_dispatcher = NULL;
 
@@ -14,7 +16,7 @@ void RpcDispatcher::setTinyPBError(std::shared_ptr<TinyPBProtocol> msg,int32_t e
 }
 
 //处理RPC请求
-void RpcDispatcher::dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s_ptr response,TcpConnection* connection)
+void RpcDispatcher::dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s_ptr response)
 {
     std::shared_ptr<TinyPBProtocol> req_protocol = std::dynamic_pointer_cast<TinyPBProtocol>(request);
     std::shared_ptr<TinyPBProtocol> rsp_protocol = std::dynamic_pointer_cast<TinyPBProtocol>(response);
@@ -22,6 +24,7 @@ void RpcDispatcher::dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s
     std::string method_full_name = req_protocol->m_method_name;
     std::string service_name;
     std::string method_name;
+
     if(!parseServiceFullName(method_full_name,service_name,method_name))
     {
         setTinyPBError(rsp_protocol,ERROR_PARSE_SERVICE_NAME,"parse sevice name error");
@@ -44,8 +47,8 @@ void RpcDispatcher::dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s
     }
     google::protobuf::Message* req_msg = service->GetRequestPrototype(method).New();//获得请求消息原型
     DEBUGLOG("start parse from string");
-    //反序列
-    if(!req_msg->ParseFromString(req_protocol->m_pb_data))
+    
+    if(!req_msg->ParseFromString(req_protocol->m_pb_data))//反序列化
     {
         setTinyPBError(rsp_protocol,ERROR_FAILED_DESERIALIZE,"parse sevice failed deserialize");
         if (req_msg != NULL) {
@@ -72,8 +75,6 @@ void RpcDispatcher::dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s
     
     rsp_protocol->m_method_name = req_protocol->m_method_name;
     rsp_protocol->m_msg_id = req_protocol->m_msg_id;
-
-    
 
     if(!rsp_msg->SerializeToString(&(rsp_protocol->m_pb_data)))
     {

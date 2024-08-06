@@ -1,30 +1,24 @@
 #include "ThreadPoll.h"
 
-ThreadPoll::ThreadPoll(size_t threadnum,const std::string &threadtype) :stop_(false),threadtype_(threadtype)
+ThreadPoll::ThreadPoll(size_t threadnum,const std::string &threadtype,size_t maxThreadnum,size_t timeOut):
+                        stop_(false),
+                        threadtype_(threadtype),
+                        currentThreadnum_(threadnum),
+                        idleThreadnum_(threadnum),
+                        minThreadnum_(threadnum),
+                        timeOut_(timeOut)
 {
-    for(int i=0 ;i<threadnum ;i++)
+    if(maxThreadnum <= threadnum)
     {
-        threads_.emplace_back([this]
-        {
-            printf("creat thread %d\n",syscall(SYS_gettid));
-            while(stop_ == false)
-            {
-                std::function<void()> task;
-                {
-                    std::unique_lock<std::mutex> lock(this->mutex_);
-                    this->condition_.wait(lock,[this]{
-                        return ((this->stop_==true) || (this->taskqueue_.empty()==false));
-                    });
+        maxThreadnum_ = threadnum;
+    }else
+    {
+        maxThreadnum_ = maxThreadnum;
+    }
 
-                    if((this->stop_ == true)&&(this->taskqueue_.empty()==true)) return;
-
-                    task = move(this->taskqueue_.front());
-                    this->taskqueue_.pop();
-                }
-                //printf("thread run %d\n",syscall(SYS_gettid));
-                task();
-            }
-        });
+    for(int i=0 ;i<currentThreadnum_ ;i++)
+    {
+        threads_.emplace_back(ThreadPoll::Threadwork);
     }
 }
 
@@ -35,6 +29,14 @@ ThreadPoll::~ThreadPoll()
 
 void ThreadPoll::addtask(std::function<void()> task)
 {
+    if(idleThreadnum_.load() <= 0 && currentThreadnum_.load() < maxThreadnum_) //没有空闲线程且小于最大线程数就创建一个新的线程
+    {
+        std::unique_lock<std::mutex> lock(this->threadMutex_);
+        threads_.emplace_back(ThreadPoll::Threadwork);
+        ++currentThreadnum_;
+        ++idleThreadnum_;
+    }
+
     {
         std::unique_lock<std::mutex> lock(this->mutex_);
         taskqueue_.push(task);
@@ -42,9 +44,38 @@ void ThreadPoll::addtask(std::function<void()> task)
     condition_.notify_one();
 }
 
+void ThreadPoll::Threadwork()
+{
+    printf("creat thread %d\n",syscall(SYS_gettid));
+    while(stop_ == false)
+    {
+        std::function<void()> task;
+        {
+            std::unique_lock<std::mutex> lock(this->mutex_);
+            this->condition_.wait_for(lock,std::chrono::seconds(180),[this]{
+                return ((this->stop_==true) || (this->taskqueue_.empty()==false));
+            });
+
+            if((this->stop_ == true)&&(this->taskqueue_.empty()==true)) return; //停止且没任务
+
+            if(this->taskqueue_.empty()==true && this->currentThreadnum_.load()> this->minThreadnum_) //超时
+            {
+                --this->idleThreadnum_;
+                --this->currentThreadnum_;
+                return;//主动结束线程
+            }
+            --this->idleThreadnum_;
+            task = move(this->taskqueue_.front());
+            this->taskqueue_.pop();
+        }
+        task();
+        ++idleThreadnum_;
+    }
+}
+
 size_t ThreadPoll::size()
 {
-    return threads_.size();
+    return currentThreadnum_.load();
 }
 
 void ThreadPoll::Stop()
