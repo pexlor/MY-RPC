@@ -19,6 +19,7 @@ Buffer::Buffer(uint16_t sep):sep_(sep)
 {
 
 }
+
 Buffer::~Buffer()
 {
 
