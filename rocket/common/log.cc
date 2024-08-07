@@ -79,7 +79,7 @@ std::string LogEvent::toSting()
 
 static Logger* g_logger = nullptr;
 
-Logger::Logger(LogLevel level)
+Logger::Logger(LogLevel level):asyncLog_("Log.text")
 {
     this->m_set_level = level;
 }
@@ -102,7 +102,6 @@ LogLevel Logger::getLogLevel()
 
 void Logger::pushlog(const std::string & msg)
 {
-    
     ScopeMutex<Mutex> lock(m_mutex);
     m_buffer.push(msg);
 }
@@ -115,6 +114,7 @@ void Logger::log()
         std::string msg = tmp.front();
         tmp.pop();
         printf(msg.c_str());
+        asyncLog_.append(&msg,msg.size());
     }
     m_buffer.swap(tmp);
     lock.unlock();

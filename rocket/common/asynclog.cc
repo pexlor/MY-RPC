@@ -10,8 +10,7 @@ AsyncLogger::AsyncLogger(const std::string & basename,off_t rollSize,int flushIn
     currentBuf_(new Buffer(maxBuffSize)),
     nextBuf_(new Buffer(maxBuffSize)),
     buffers_(),
-    isReady_(false),
-    isRuning_(false)
+    isRuning_(true)
 {
     //currentBuf_->bzero();
     //nextBuf_->bzero();
@@ -51,7 +50,7 @@ void AsyncLogger::append(const std::string * logline,int len)
 
 void AsyncLogger::AsyncLoggerLoop()
 {
-    //assert(isRuning_ == true);
+    assert(isRuning_ == true);
     fileFd_ = open(basename_.c_str(),O_RDWR | O_CREAT, 0666);
 
     BufferPtr newBuffer1(new Buffer(maxBuffSize));
@@ -61,8 +60,6 @@ void AsyncLogger::AsyncLoggerLoop()
     BufferVector buffersToWrite;
     buffersToWrite.reserve(16);
     std::string output;
-    isReady_ = true;
-    while(!isRuning_);
     while(isRuning_)
     {
         printf(" size: %d\n",newBuffer1->size());
@@ -126,12 +123,12 @@ void AsyncLogger::AsyncLoggerLoop()
     output = "";
 }
 
-void AsyncLogger::start()
-{
-    while(!isReady_);
-    isRuning_ = true;
+// void AsyncLogger::start()
+// {
+//     while(!isReady_);
+//     isRuning_ = true;
     
-}
+// }
 
 void AsyncLogger::stop()
 {

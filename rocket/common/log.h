@@ -8,7 +8,7 @@
 #include <sys/time.h>
 #include "config.h"
 #include "rocket/common/mutex.h"
-
+#include "asynclog.h"
 
 template<typename... Args>
 std::string formatString(const char* str,Args&&... args)
@@ -66,6 +66,7 @@ private:
     Mutex m_mutex = Mutex();
     LogLevel m_set_level;
     std::queue<std::string> m_buffer;
+    AsyncLogger asyncLog_;
 };
 
 std::string LogLevelToString(LogLevel level);

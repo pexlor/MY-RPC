@@ -12,6 +12,8 @@
 #include <cassert>
 #include "Buffer.h"
 
+
+//todo: 线程准备好后才能append
 class AsyncLogger {
 private:
     typedef std::vector<std::unique_ptr<Buffer>> BufferVector;
@@ -29,12 +31,9 @@ private:
     const off_t rollSize_; //预留日志大小
     const std::string basename_;
     std::atomic<bool> isRuning_;
-
     int fileFd_;
-    
-    const uint64_t maxBuffSize = 65534;
+    const uint64_t maxBuffSize = 50000;
 
-    std::atomic<bool> isReady_;
 private:
     void AsyncLoggerLoop();
 

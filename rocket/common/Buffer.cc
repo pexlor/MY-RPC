@@ -15,16 +15,18 @@ public:
     void clear();
 };
 */
-Buffer::Buffer(uint16_t sep):sep_(sep),maxLen_(65534),bufSize(0)
+#define MAX_BUF_SIZE 1000000
+
+Buffer::Buffer(uint16_t sep):sep_(sep),maxLen_(MAX_BUF_SIZE),bufSize(0)
 {
 
 }
 
 Buffer::Buffer(uint64_t maxLen):sep_(0),maxLen_(maxLen),bufSize(0)
 {
-    if(maxLen > 65534)
+    if(maxLen > MAX_BUF_SIZE)
     {
-        maxLen = 65534;
+        maxLen = MAX_BUF_SIZE;
     }
     maxLen_ = maxLen;
     //buf_.resize(maxLen_);
