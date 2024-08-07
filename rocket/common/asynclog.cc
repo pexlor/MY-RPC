@@ -1,39 +1,5 @@
 #include "asynclog.h"
 
-/*
-class AsyncLogger {
-private:
-    typedef std::vector<std::unique_ptr<Buffer>> BufferVector;
-    typedef BufferVector::value_type BufferPtr;
-
-    std::thread thread_;
-    std::mutex mutex_;
-    std::condition_variable cond_;
-
-    BufferPtr currentBuf_;
-    BufferPtr nextBuf_;
-    BufferVector buffers_;
-
-    const int flushInterval_;//刷新时间
-    const off_t rollSize; //预留日志大小
-    const std::string basename_;
-    std::atomic<bool> isRuning_;
-
-    int fileFd_;
-    
-private:
-    void AsyncLoggerLoop();
-
-public:
-    void append(const std::string * logline,int len);
-    void start();
-    void stop();
-    ~AsyncLogger();
-    AsyncLogger(const std::string & basename,off_t rollSize,int flushInterval = 3);
-
-};
-*/
-
 AsyncLogger::AsyncLogger(const std::string & basename,off_t rollSize,int flushInterval) :
     flushInterval_(flushInterval),
     basename_(basename),
@@ -41,13 +7,23 @@ AsyncLogger::AsyncLogger(const std::string & basename,off_t rollSize,int flushIn
     thread_(std::bind(&AsyncLogger::AsyncLoggerLoop,this)),
     mutex_(),
     cond_(),
-    currentBuf_(new Buffer),
-    nextBuf_(new Buffer),
-    buffers_()
+    currentBuf_(new Buffer(maxBuffSize)),
+    nextBuf_(new Buffer(maxBuffSize)),
+    buffers_(),
+    isReady_(false),
+    isRuning_(false)
 {
     //currentBuf_->bzero();
     //nextBuf_->bzero();
     buffers_.reserve(16);
+}
+
+AsyncLogger::~AsyncLogger()
+{
+    if (isRuning_)
+    {
+      stop();
+    }
 }
 
 void AsyncLogger::append(const std::string * logline,int len)
@@ -66,7 +42,7 @@ void AsyncLogger::append(const std::string * logline,int len)
         }
         else
         {
-            currentBuf_.reset(new Buffer);
+            currentBuf_.reset(new Buffer(maxBuffSize));
         }
         currentBuf_->append(logline->c_str(),len);
         cond_.notify_all();
@@ -75,19 +51,23 @@ void AsyncLogger::append(const std::string * logline,int len)
 
 void AsyncLogger::AsyncLoggerLoop()
 {
-    assert(isRuning_ == true);
+    //assert(isRuning_ == true);
     fileFd_ = open(basename_.c_str(),O_RDWR | O_CREAT, 0666);
 
-    BufferPtr newBuffer1(new Buffer);
-    BufferPtr newBuffer2(new Buffer);
-    newBuffer1->bzero();
-    newBuffer2->bzero();
+    BufferPtr newBuffer1(new Buffer(maxBuffSize));
+    BufferPtr newBuffer2(new Buffer(maxBuffSize));
+    //newBuffer1->bzero();
+    //newBuffer2->bzero();
     BufferVector buffersToWrite;
     buffersToWrite.reserve(16);
+    std::string output;
+    isReady_ = true;
+    while(!isRuning_);
     while(isRuning_)
     {
-        assert(newBuffer1 && newBuffer1->length() == 0);
-        assert(newBuffer2 && newBuffer2->length() == 0);
+        printf(" size: %d\n",newBuffer1->size());
+        assert(newBuffer1 && newBuffer1->size() == 0);
+        assert(newBuffer2 && newBuffer2->size() == 0);
         assert(buffersToWrite.empty());
         {
             std::unique_lock<std::mutex> lock(mutex_);
@@ -109,14 +89,12 @@ void AsyncLogger::AsyncLoggerLoop()
         
         if(buffersToWrite.size() > 25)
         {
-            char buf[256];
-            //snprintf(buf,sizeof(buf));
             buffersToWrite.erase(buffersToWrite.begin()+2, buffersToWrite.end());
         }
         // 将buffersToWrite的数据写入到日志文件中
         for (const auto& buffer : buffersToWrite)
         {
-            output.append(buffer->data(), buffer->length());
+            output.append(buffer->data(), buffer->size());
         }
         // 重新调整buffersToWrite的大小
         if (buffersToWrite.size() > 2)
@@ -141,13 +119,16 @@ void AsyncLogger::AsyncLoggerLoop()
         }
         // 清空buffersToWrite
         buffersToWrite.clear();
-        output.flush();
+        write(fileFd_,output.c_str(),output.size());
+        output = "";
     }
-    output.flush();
+    write(fileFd_,output.c_str(),output.size());
+    output = "";
 }
 
 void AsyncLogger::start()
 {
+    while(!isReady_);
     isRuning_ = true;
     
 }

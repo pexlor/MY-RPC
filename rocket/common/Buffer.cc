@@ -15,9 +15,25 @@ public:
     void clear();
 };
 */
-Buffer::Buffer(uint16_t sep):sep_(sep)
+Buffer::Buffer(uint16_t sep):sep_(sep),maxLen_(65534),bufSize(0)
 {
 
+}
+
+Buffer::Buffer(uint64_t maxLen):sep_(0),maxLen_(maxLen),bufSize(0)
+{
+    if(maxLen > 65534)
+    {
+        maxLen = 65534;
+    }
+    maxLen_ = maxLen;
+    //buf_.resize(maxLen_);
+}
+
+void Buffer::reset()
+{
+    buf_ = "";
+    //buf_.resize(maxLen_);
 }
 
 Buffer::~Buffer()
@@ -25,9 +41,16 @@ Buffer::~Buffer()
 
 }
 
+uint64_t Buffer::avail()
+{
+    return maxLen_-buf_.size();
+}
+
 void Buffer::append(const char * data ,size_t size)
 {
-    buf_.append(data,size);
+    if(avail() >= size){
+        buf_.append(data,size);
+    }
 }
 
 size_t Buffer::size()

@@ -32,6 +32,9 @@ private:
 
     int fileFd_;
     
+    const uint64_t maxBuffSize = 65534;
+
+    std::atomic<bool> isReady_;
 private:
     void AsyncLoggerLoop();
 
@@ -40,6 +43,6 @@ public:
     void start();
     void stop();
     ~AsyncLogger();
-    AsyncLogger(const std::string & basename,off_t rollSize,int flushInterval = 3);
+    AsyncLogger(const std::string & basename,off_t rollSize = 0,int flushInterval = 3);
 
 };
