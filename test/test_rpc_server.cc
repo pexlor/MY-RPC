@@ -12,7 +12,8 @@
 #include "rocket/common/log.h"
 #include "rocket/common/config.h"
 #include "order.pb.h"
-#include "rocket/net/Rpc/rpc_server.h"
+#include "rocket/server/Rpc/rpc_server.h"
+
 class OrderImpl : public Order {
     
 public:
@@ -41,6 +42,7 @@ int main(int argc , char * argv[])
         printf("usgae :./tecepoll ip port\n");
         return -1;
     }
+
     Config::SetGlobalConfig("/home/pexlor/Downloads/reactor/conf/rocket.xml");
     Logger::SetGetGloballLogger();
     std::shared_ptr<OrderImpl> service = std::make_shared<OrderImpl>();
