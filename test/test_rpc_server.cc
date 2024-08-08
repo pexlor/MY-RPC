@@ -44,7 +44,7 @@ int main(int argc , char * argv[])
     }
 
     Config::SetGlobalConfig("/home/pexlor/Downloads/reactor/conf/rocket.xml");
-    Logger::SetGetGloballLogger();
+    Logger::Init();
     std::shared_ptr<OrderImpl> service = std::make_shared<OrderImpl>();
     RPCServer rpcServer(argv[1],atoi(argv[2]),3,3);
     rpcServer.RegisterRpcService(service);

@@ -17,6 +17,7 @@
 #include <google/protobuf/service.h>
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/message.h>
+#include <coder/abstract_coder.h>
 
 #define NEWMESSAGE(type, var_name) \
     std::shared_ptr<type> var_name = std::make_shared<type>(); \
@@ -77,7 +78,6 @@ private:
     bool m_is_init {false};
 
     AbstractCoder* m_coder_;
-
 
 };
 

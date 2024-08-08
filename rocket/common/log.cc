@@ -77,7 +77,7 @@ std::string LogEvent::toSting()
     return ss.str();
 }
 
-static Logger* g_logger = nullptr;
+static std::unique_ptr<Logger> g_logger = nullptr;
 
 Logger::Logger(LogLevel level):asyncLog_("Log.text")
 {
@@ -94,13 +94,13 @@ void Logger::Init()
     {
         global_log_levle = LogLevel::Debug;
     }
-    g_logger = new Logger(global_log_levle);
+    g_logger.reset(new Logger(global_log_levle));
     g_logger->asyncLog_.start();
 }
 
 Logger * Logger::GetGloballLogger()
 {
-    return g_logger;   
+    return g_logger.get();   
 }
 
 LogLevel Logger::getLogLevel()
@@ -112,18 +112,19 @@ void Logger::pushlog(const std::string & msg)
 {
     ScopeMutex<Mutex> lock(m_mutex);
     m_buffer.push(msg);
+    asyncLog_.append(msg,msg.size());
+}
+
+Logger::~Logger()
+{
+    printf("Logger over\n");
 }
 
 void Logger::log()
 {
     ScopeMutex<Mutex> lock(m_mutex);
-    std::queue<std::string> tmp = m_buffer;
-    while (!tmp.empty()) {
-        std::string msg = tmp.front();
-        tmp.pop();
-        printf(msg.c_str());
-        asyncLog_.append(&msg,msg.size());
+    while (!m_buffer.empty()) {
+        std::string msg = m_buffer.front();
+        m_buffer.pop();
     }
-    m_buffer.swap(tmp);
-    lock.unlock();
 }

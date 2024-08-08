@@ -42,7 +42,7 @@ private:
     void AsyncLoggerLoop();
 
 public:
-    void append(const std::string * logline,int len);
+    void append(const std::string & logline,int len);
     void start();
     void stop();
     ~AsyncLogger();

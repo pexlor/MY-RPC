@@ -2,7 +2,7 @@
 #define ROCKET_COMMON_MUTEXT_H
 
 #include <pthread.h>
-
+#include <atomic>
 
 
 template <class T>
@@ -35,8 +35,8 @@ public:
 
 private:
     T& m_mutex;
-    
-    bool m_is_lock {false};
+    //bool m_is_lock {false};
+    std::atomic<bool> m_is_lock {false};
 
 };
 

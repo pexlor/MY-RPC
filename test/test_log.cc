@@ -3,7 +3,7 @@
 
 void * fun(void*)
 {
-    int i = 20;
+    int i = 10000;
     while(i--)
     {
         DEBUGLOG("test log");
@@ -13,18 +13,14 @@ void * fun(void*)
 
 int main()
 {
-    Config::SetGlobalConfig("/home/pexlor/Downloads/rpc/conf/rocket.xml");
-    Logger::SetGetGloballLogger();
+    Config::SetGlobalConfig("/root/Downloads/MY-RPC/conf/rocket.xml");
+    Logger::Init();
     pthread_t thread1;
     pthread_create(&thread1,NULL,&fun,NULL);
     pthread_t thread2;
     pthread_create(&thread2,NULL,&fun,NULL);
-    int i = 20;
-    while(i--)
-    {
-        DEBUGLOG("test log");
-    }
     pthread_join(thread1,NULL);
     pthread_join(thread2,NULL);
+    //Logger::GetGloballLogger()->~Logger();
     return 0;
 }

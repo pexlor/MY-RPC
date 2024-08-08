@@ -9,25 +9,26 @@ AsyncLogger::AsyncLogger(const std::string & basename,off_t rollSize,int flushIn
     currentBuf_(new Buffer(maxBuffSize)),
     nextBuf_(new Buffer(maxBuffSize)),
     buffers_(),
-    isRuning_(true)
+    isRuning_(false)
 {
     buffers_.reserve(16);
 }
 
 AsyncLogger::~AsyncLogger()
 {
+    printf("~AsyncLogger");
     if (isRuning_)
     {
       stop();
     }
 }
 
-void AsyncLogger::append(const std::string * logline,int len)
+void AsyncLogger::append(const std::string & logline,int len)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     if(currentBuf_->avail() > len)
     {
-        currentBuf_->append(logline->c_str(),len);
+        currentBuf_->append(logline.c_str(),len);
     }
     else
     {
@@ -40,7 +41,7 @@ void AsyncLogger::append(const std::string * logline,int len)
         {
             currentBuf_.reset(new Buffer(maxBuffSize));
         }
-        currentBuf_->append(logline->c_str(),len);
+        currentBuf_->append(logline.c_str(),len);
         cond_.notify_all();
     }
 }
@@ -49,7 +50,6 @@ void AsyncLogger::AsyncLoggerLoop()
 {
     assert(isRuning_);
     fileFd_ = open(basename_.c_str(),O_RDWR | O_CREAT, 0666);
-
     BufferPtr newBuffer1(new Buffer(maxBuffSize));
     BufferPtr newBuffer2(new Buffer(maxBuffSize));
     BufferVector buffersToWrite;
@@ -58,7 +58,6 @@ void AsyncLogger::AsyncLoggerLoop()
     runCond_.notify_all();//通知主线程准备完毕
     while(isRuning_)
     {
-        printf(" size: %d\n",newBuffer1->size());
         assert(newBuffer1 && newBuffer1->size() == 0);
         assert(newBuffer2 && newBuffer2->size() == 0);
         assert(buffersToWrite.empty());
@@ -66,7 +65,9 @@ void AsyncLogger::AsyncLoggerLoop()
             std::unique_lock<std::mutex> lock(mutex_);
             if(buffers_.empty())
             {
+                printf("i im wait\n");
                 cond_.wait_for(lock,std::chrono::seconds(flushInterval_));
+                printf("i im wait2\n");
             }
 
             buffers_.push_back(std::move(currentBuf_));
@@ -112,16 +113,19 @@ void AsyncLogger::AsyncLoggerLoop()
         }
         // 清空buffersToWrite
         buffersToWrite.clear();
+        printf("asyncLogger is write\n");
         write(fileFd_,output.c_str(),output.size());
         output = "";
     }
     write(fileFd_,output.c_str(),output.size());
     output = "";
+    close(fileFd_);
 }
 
 void AsyncLogger::start()
 {
-    if(thread_ || isRuning_){
+    if(isRuning_){
+        printf("asyncLogger is run\n");
         return;
     }
     isRuning_ = true;
@@ -132,6 +136,7 @@ void AsyncLogger::start()
 
 void AsyncLogger::stop()
 {
+    printf("wait stop");
     isRuning_ = false;
     cond_.notify_all();
     thread_->join();

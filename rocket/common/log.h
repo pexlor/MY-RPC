@@ -62,6 +62,7 @@ public:
     static Logger * GetGloballLogger();
     static void Init();
     void log();
+    ~Logger();
 private:
     Mutex m_mutex = Mutex();
     LogLevel m_set_level;
