@@ -4,7 +4,6 @@ AsyncLogger::AsyncLogger(const std::string & basename,off_t rollSize,int flushIn
     flushInterval_(flushInterval),
     basename_(basename),
     rollSize_(rollSize),
-    thread_(std::bind(&AsyncLogger::AsyncLoggerLoop,this)),
     mutex_(),
     cond_(),
     currentBuf_(new Buffer(maxBuffSize)),
@@ -12,8 +11,6 @@ AsyncLogger::AsyncLogger(const std::string & basename,off_t rollSize,int flushIn
     buffers_(),
     isRuning_(true)
 {
-    //currentBuf_->bzero();
-    //nextBuf_->bzero();
     buffers_.reserve(16);
 }
 
@@ -50,16 +47,15 @@ void AsyncLogger::append(const std::string * logline,int len)
 
 void AsyncLogger::AsyncLoggerLoop()
 {
-    assert(isRuning_ == true);
+    assert(isRuning_);
     fileFd_ = open(basename_.c_str(),O_RDWR | O_CREAT, 0666);
 
     BufferPtr newBuffer1(new Buffer(maxBuffSize));
     BufferPtr newBuffer2(new Buffer(maxBuffSize));
-    //newBuffer1->bzero();
-    //newBuffer2->bzero();
     BufferVector buffersToWrite;
     buffersToWrite.reserve(16);
     std::string output;
+    runCond_.notify_all();//通知主线程准备完毕
     while(isRuning_)
     {
         printf(" size: %d\n",newBuffer1->size());
@@ -123,16 +119,20 @@ void AsyncLogger::AsyncLoggerLoop()
     output = "";
 }
 
-// void AsyncLogger::start()
-// {
-//     while(!isReady_);
-//     isRuning_ = true;
-    
-// }
+void AsyncLogger::start()
+{
+    if(thread_ || isRuning_){
+        return;
+    }
+    isRuning_ = true;
+    thread_.reset(new std::thread(std::bind(&AsyncLogger::AsyncLoggerLoop,this)));
+    std::unique_lock<std::mutex> lock(runMutex_);
+    runCond_.wait(lock);
+}
 
 void AsyncLogger::stop()
 {
     isRuning_ = false;
     cond_.notify_all();
-    thread_.join();
+    thread_->join();
 }

@@ -3,7 +3,7 @@
 #include <functional>
 #include <memory>
 //#include "rocket/common/run_time.h"
-#include "rocket/common/log.h"
+#include "log.h"
 //#include "rocket/common/exception.h"
 //#include "rocket/net/rpc/rpc_interface.h"
 

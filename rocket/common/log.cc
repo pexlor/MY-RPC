@@ -84,10 +84,18 @@ Logger::Logger(LogLevel level):asyncLog_("Log.text")
     this->m_set_level = level;
 }
 
-void Logger::SetGetGloballLogger()
+void Logger::Init()
 {
-    LogLevel global_log_levle = StringToLogLevel(Config::GetGlobalConfig()->m_log_level);
+    LogLevel global_log_levle;
+    if(Config::GetGlobalConfig())
+    {
+        global_log_levle = StringToLogLevel(Config::GetGlobalConfig()->m_log_level);
+    }else
+    {
+        global_log_levle = LogLevel::Debug;
+    }
     g_logger = new Logger(global_log_levle);
+    g_logger->asyncLog_.start();
 }
 
 Logger * Logger::GetGloballLogger()

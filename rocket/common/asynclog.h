@@ -19,7 +19,7 @@ private:
     typedef std::vector<std::unique_ptr<Buffer>> BufferVector;
     typedef BufferVector::value_type BufferPtr;
 
-    std::thread thread_;
+    std::unique_ptr<std::thread> thread_;
     std::mutex mutex_;
     std::condition_variable cond_;
 
@@ -30,7 +30,11 @@ private:
     const int flushInterval_;//刷新时间
     const off_t rollSize_; //预留日志大小
     const std::string basename_;
+
+    std::mutex runMutex_;
+    std::condition_variable runCond_;
     std::atomic<bool> isRuning_;
+
     int fileFd_;
     const uint64_t maxBuffSize = 50000;
 

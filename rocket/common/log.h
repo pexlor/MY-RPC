@@ -60,7 +60,7 @@ public:
     void pushlog(const std::string & msg);
     LogLevel getLogLevel();
     static Logger * GetGloballLogger();
-    static void SetGetGloballLogger();
+    static void Init();
     void log();
 private:
     Mutex m_mutex = Mutex();
