@@ -66,8 +66,8 @@ public:
     //TimerEvent::s_ptr GetTimerEvnet();
 
 private:
-    InetAddress m_peer_addr ;
-    InetAddress m_local_addr ;
+    std::string  m_ip;
+    uint16_t  m_port;
 
     controller_s_ptr m_controller {nullptr};
     message_s_ptr m_request {nullptr};
@@ -76,16 +76,8 @@ private:
 
     bool m_is_init {false};
 
-    //std::unique_ptr<EventLoop> m_loop;
-    //Acceptor acceptor_;//接收线程
+    AbstractCoder* m_coder_;
 
-    std::unique_ptr<Connection> conn_;
-    std::unique_ptr<EventLoop> mainloop_;
-    //Channel acceptchannel_;
-
-   // TcpClient::s_ptr m_client;
-
-   // TimerEvent::s_ptr m_timer_event;
 
 };
 

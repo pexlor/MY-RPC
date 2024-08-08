@@ -2,18 +2,11 @@
 #include "coder/abstract_coder.h"
 #include "coder/tinypb_coder.h"
 
-RpcChannel::RpcChannel(const char * ip ,uint16_t port) : 
-    m_peer_addr(InetAddress(ip,port)),
-    mainloop_(new EventLoop(true))                                    
+RpcChannel::RpcChannel(const char * ip ,uint16_t port):
+    m_ip(ip),
+    m_port(port)
 {
-    std::unique_ptr<Socket> servsock_(new Socket(createnonblocking()));
-    servsock_->setreuseaddr(true);
-    servsock_->setreuseport(true);
-    servsock_->settcpnodelay(true);
-    servsock_->setkeepalive(true);
-    servsock_->setipport(ip,port);
-    servsock_->bind(m_peer_addr);
-    conn_.reset(new Connection(mainloop_.get(),std::move(servsock_)));
+    m_coder_= new TinyPBCoder();
 }
 
 RpcChannel::~RpcChannel() {
@@ -61,24 +54,27 @@ void RpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method,
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in server_addr;
     server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(12345);
-    if (inet_pton(AF_INET, "127.0.0.1", &(server_addr.sin_addr)) <= 0) {
+    server_addr.sin_port = htons(m_port);
+    if (inet_pton(AF_INET, m_ip.c_str(), &(server_addr.sin_addr)) <= 0) {
         std::cerr << "Invalid address/ Address not supported" << std::endl;
         close(sockfd);
         return;
     }
+
     if (connect(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
         std::cerr << "Connection Failed" << std::endl;
         close(sockfd);
         return;
     }
+
     std::vector<AbstractProtocol::s_ptr> messages;
     messages.push_back(req_protocol);
-    AbstractCoder* m_coder = new TinyPBCoder();
     printf("messages size: %d\n",messages.size());
+
     std::string out_buf;
-    m_coder->encode(messages,out_buf);
+    m_coder_->encode(messages,out_buf);
     printf("encode ok %d\n",out_buf.size());
+
     send(sockfd,out_buf.c_str(),out_buf.size(),0);
     printf("send ok\n");
     char buf[1024] = {0};
@@ -88,7 +84,7 @@ void RpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method,
     std::vector<AbstractProtocol::s_ptr> out_messages;
 
     std::string out_buf2(buf);
-    m_coder->decode(out_messages,out_buf2);
+    m_coder_->decode(out_messages,out_buf2);
     if(out_messages.size() != 1)
     {
         return;

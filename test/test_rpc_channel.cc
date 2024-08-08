@@ -10,11 +10,10 @@
 #include <unistd.h>
 #include "rocket/common/log.h"
 #include "rocket/common/config.h"
-//#include "rocket/net/coder/string_coder.h"
 #include "rocket/server/Rpc/coder/abstract_protocol.h"
 #include "rocket/server/Rpc/coder/tinypb_coder.h"
 #include "rocket/server/Rpc/coder/tinypb_protocol.h"
-//#include "rocket/net/rpc/rpc_channel.h"
+#include "rocket/server/Rpc/rpc_channel.h"
 #include "rocket/server/Rpc/rpc_closure.h"
 #include "rocket/server/Rpc/rpc_controller.h"
 
@@ -32,6 +31,11 @@
 #include <time.h>
 
 
+void testRpcChannel()
+{
+    RpcChannel mychannel("127.0.0.1",5000);
+}
+
 int main(int argc, char *argv[])
 {
     if (argc != 3)
@@ -41,7 +45,7 @@ int main(int argc, char *argv[])
         return -1;
     }
     Config::SetGlobalConfig("/home/pexlor/Downloads/rpc/conf/rocket.xml");
-    Logger::SetGetGloballLogger();
+    Logger::Init();
 
     int sockfd;
     struct sockaddr_in servaddr;
