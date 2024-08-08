@@ -1,11 +1,22 @@
 
+/**
+ * @param 用于客户端
+*/
+
 #pragma once
 
 #include <memory>
-#include <google/protobuf/service.h>
 #include "InetAddress.h"
 #include "EventLoop.h"
-#include "Acceptor.h"
+#include "Connection.h"
+#include "rpc_controller.h"
+#include "log.h"
+#include "msg_id_util.h"
+#include "error_code.h"
+#include "coder/tinypb_protocol.h"
+#include <google/protobuf/service.h>
+#include <google/protobuf/descriptor.h>
+#include <google/protobuf/message.h>
 
 #define NEWMESSAGE(type, var_name) \
     std::shared_ptr<type> var_name = std::make_shared<type>(); \
@@ -68,7 +79,8 @@ private:
     //std::unique_ptr<EventLoop> m_loop;
     //Acceptor acceptor_;//接收线程
 
-    Socket servsock_;
+    std::unique_ptr<Connection> conn_;
+    std::unique_ptr<EventLoop> mainloop_;
     //Channel acceptchannel_;
 
    // TcpClient::s_ptr m_client;

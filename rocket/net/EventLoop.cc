@@ -23,7 +23,7 @@ int createtimerfd(int sec = 5)
     return tfd;
 }
 
-EventLoop::EventLoop(bool mainloop,int timeval = 30,int timeout = 80):
+EventLoop::EventLoop(bool mainloop,int timeval,int timeout):
                         timeval_(timeval),
                         timeout_(timeout),
                         mainloop_(mainloop),//是否为主循环

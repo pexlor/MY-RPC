@@ -43,7 +43,7 @@ private:
 
     std::atomic_bool stop_;//停止标志
 public:
-    EventLoop(bool mainloop,int timeval,int timeout);
+    EventLoop(bool mainloop,int timeval = 30,int timeout = 80);
     ~EventLoop();
     void run();
     void stop();

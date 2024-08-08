@@ -1,26 +1,19 @@
-#include <memory>
-#include <google/protobuf/service.h>
-#include <google/protobuf/descriptor.h>
-#include <google/protobuf/message.h>
 #include "rpc_channel.h"
-#include "rpc_controller.h"
-#include "coder/tinypb_protocol.h"
-#include "rocket/common/log.h"
-#include "rocket/common/msg_id_util.h"
-#include "rocket/common/error_code.h"
+#include "coder/abstract_coder.h"
+#include "coder/tinypb_coder.h"
 
-RpcChannel::RpcChannel(const char * ip ,uint16_t port) : m_peer_addr(InetAddress(ip,port)),
-                                                        servsock_(createnonblocking())
-                                                        
+RpcChannel::RpcChannel(const char * ip ,uint16_t port) : 
+    m_peer_addr(InetAddress(ip,port)),
+    mainloop_(new EventLoop(true))                                    
 {
-    //m_client = std::make_shared<TcpClient>(m_peer_addr); //传入ip地址
-    servsock_.setreuseaddr(true);
-    servsock_.setreuseport(true);
-    servsock_.settcpnodelay(true);
-    servsock_.setkeepalive(true);
-    servsock_.setipport(ip,port);
-    servsock_.bind(m_peer_addr);
-    //servsock_.listen(128);
+    std::unique_ptr<Socket> servsock_(new Socket(createnonblocking()));
+    servsock_->setreuseaddr(true);
+    servsock_->setreuseport(true);
+    servsock_->settcpnodelay(true);
+    servsock_->setkeepalive(true);
+    servsock_->setipport(ip,port);
+    servsock_->bind(m_peer_addr);
+    conn_.reset(new Connection(mainloop_.get(),std::move(servsock_)));
 }
 
 RpcChannel::~RpcChannel() {
@@ -30,14 +23,13 @@ RpcChannel::~RpcChannel() {
 void RpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method, 
                         google::protobuf::RpcController* controller, const google::protobuf::Message* request,
                         google::protobuf::Message* response, google::protobuf::Closure* done) {
-    
+
     std::shared_ptr<TinyPBProtocol> req_protocol = std::make_shared<TinyPBProtocol>();
     RpcController* my_controller = dynamic_cast<RpcController*>(controller);
     if (my_controller == NULL) {
         ERRORLOG("failed Callmethod, RpcController convert error");
         return;
     }
- 
 
     if (my_controller->GetMsgId().empty()) {
         req_protocol->m_msg_id = MsgIDUtil::GenMsgID();
@@ -66,54 +58,46 @@ void RpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method,
     }
 
     s_ptr channel = shared_from_this();
-
-    if(servsock_.connect(m_peer_addr))
-    {
-        RpcController* my_controller = dynamic_cast<RpcController*>(channel->GetController());
-        
-        channel->GetTcpClient()->writeMessage(req_protocol, [req_protocol, channel, my_controller](AbstractProtocol::s_ptr msg_ptr) mutable {
-
-            INFOLOG("%s | send request success. call method name[%s], peer addr[%s], local addr[%s]",
-                req_protocol->m_msg_id.c_str(), req_protocol->m_method_name.c_str(), 
-                channel->GetTcpClient()->getPeerAddr()->toString().c_str(), channel->GetTcpClient()->getLocalAddr()->toString().c_str());
-            
-            channel->GetTcpClient()->readMessage(req_protocol->m_msg_id, [channel, my_controller](AbstractProtocol::s_ptr msg) mutable {
-                std::shared_ptr<TinyPBProtocol> rsp_protocol = std::dynamic_pointer_cast<TinyPBProtocol> (msg);
-                
-                INFOLOG("%s | success get rpc response, call method name[%s], peer addr[%s], local addr[%s]", 
-                    rsp_protocol->m_msg_id.c_str(), rsp_protocol->m_method_name.c_str(),
-                    channel->GetTcpClient()->getPeerAddr()->toString().c_str(), channel->GetTcpClient()->getPeerAddr()->toString().c_str());
-
-
-                // RpcController* my_controller = dynamic_cast<RpcController*>(channel->GetController());
-                if (!(channel->GetResponse()->ParseFromString(rsp_protocol->m_pb_data))) {
-                    ERRORLOG("%s | deserialize error", rsp_protocol->m_msg_id.c_str());
-                    my_controller->SetError(ERROR_FAILED_SERIALIZE, "deserialize error");
-                    return;
-                }
-
-                if (rsp_protocol->m_err_code != 0) {
-                    ERRORLOG("%s | call rpc method[%s] failed, error code[%d], error info[%s]", 
-                        rsp_protocol->m_msg_id.c_str(), rsp_protocol->m_method_name.c_str(), 
-                        rsp_protocol->m_err_code, rsp_protocol->m_err_info.c_str());
-                   
-                    my_controller->SetError(rsp_protocol->m_err_code, rsp_protocol->m_err_info);
-                    return;
-                }
-
-                INFOLOG("%s | call rpc success, call method name[%s], peer addr[%s], local addr[%s]",
-                    rsp_protocol->m_msg_id.c_str(), rsp_protocol->m_method_name.c_str(),
-                    channel->GetTcpClient()->getPeerAddr()->toString().c_str(), channel->GetTcpClient()->getPeerAddr()->toString().c_str());
-
-                if ((!my_controller->IsCanceled()) && channel->GetClosure()) {
-                    channel->GetClosure()->Run();
-                }
-
-                channel.reset();    // shared_ptr ref_count -1 
-            });
-
-        });
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    struct sockaddr_in server_addr;
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(12345);
+    if (inet_pton(AF_INET, "127.0.0.1", &(server_addr.sin_addr)) <= 0) {
+        std::cerr << "Invalid address/ Address not supported" << std::endl;
+        close(sockfd);
+        return;
     }
+    if (connect(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
+        std::cerr << "Connection Failed" << std::endl;
+        close(sockfd);
+        return;
+    }
+    std::vector<AbstractProtocol::s_ptr> messages;
+    messages.push_back(req_protocol);
+    AbstractCoder* m_coder = new TinyPBCoder();
+    printf("messages size: %d\n",messages.size());
+    std::string out_buf;
+    m_coder->encode(messages,out_buf);
+    printf("encode ok %d\n",out_buf.size());
+    send(sockfd,out_buf.c_str(),out_buf.size(),0);
+    printf("send ok\n");
+    char buf[1024] = {0};
+
+    recv(sockfd,buf,1024,0);
+    printf("recv ok %s\n",buf);
+    std::vector<AbstractProtocol::s_ptr> out_messages;
+
+    std::string out_buf2(buf);
+    m_coder->decode(out_messages,out_buf2);
+    if(out_messages.size() != 1)
+    {
+        return;
+    }
+    if(!response->ParseFromString(std::dynamic_pointer_cast<TinyPBProtocol>(out_messages[0])->m_pb_data))//反序列化
+    {
+        return;
+    }
+    close(sockfd);
 }
 
 void RpcChannel::Init(controller_s_ptr controller, message_s_ptr req, message_s_ptr rsp, closure_s_ptr done) {

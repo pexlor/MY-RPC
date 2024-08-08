@@ -98,8 +98,6 @@ void RPCServer::OnMessage(spConnection conn,std::string &message)
     std::string m_out_buffer;
     m_coder->encode(reply_messages, m_out_buffer);
     DEBUGLOG("encode ok");
-    // 监听写回调函数
-    //listenWrite();
     conn->send(m_out_buffer.c_str(),m_out_buffer.size());
     std::cout << "message send\n";
 }
