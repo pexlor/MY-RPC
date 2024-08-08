@@ -22,7 +22,6 @@ void Epoll::addfd(int fd,uint32_t op)
     if(epoll_ctl(epollfd_,EPOLL_CTL_ADD,fd,&epollev) == -1)
     {
         perror("epoll add error\n");
-        //printf("epoll add error\n");
         exit(-1);
     }
 }

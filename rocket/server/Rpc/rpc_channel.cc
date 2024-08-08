@@ -50,7 +50,6 @@ void RpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method,
         return;
     }
 
-    s_ptr channel = shared_from_this();
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in server_addr;
     server_addr.sin_family = AF_INET;
@@ -73,24 +72,29 @@ void RpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method,
 
     std::string out_buf;
     m_coder_->encode(messages,out_buf);
-    printf("encode ok %d\n",out_buf.size());
+    //printf("encode ok %d\n",out_buf.size());
 
     send(sockfd,out_buf.c_str(),out_buf.size(),0);
-    printf("send ok\n");
+    //printf("send ok\n");
     char buf[1024] = {0};
 
-    recv(sockfd,buf,1024,0);
-    printf("recv ok %s\n",buf);
+    int len = recv(sockfd,buf,1024,0);
+    printf("start:%x\n",buf[0]);
+    printf("recv ok %d\n",len);
     std::vector<AbstractProtocol::s_ptr> out_messages;
 
-    std::string out_buf2(buf);
+    std::string out_buf2;
+    out_buf2.assign(buf, len);
+    printf("start:%x, end :%x\n",out_buf2.c_str()[0],out_buf2.c_str()[out_buf2.size()-1]);
     m_coder_->decode(out_messages,out_buf2);
     if(out_messages.size() != 1)
     {
+        printf("decode error\n");
         return;
     }
     if(!response->ParseFromString(std::dynamic_pointer_cast<TinyPBProtocol>(out_messages[0])->m_pb_data))//反序列化
     {
+        printf("ParseFromString error\n");
         return;
     }
     close(sockfd);

@@ -79,6 +79,7 @@ void Buffer::appendwithsep(const char * data , size_t size)
 {
     if(sep_== 0)
     {
+        //printf("111start:%x\n",data[0]);
         buf_.append(data,size);
     }else if(sep_ == 1)
     {

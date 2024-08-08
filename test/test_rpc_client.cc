@@ -39,20 +39,36 @@ void testRpcChannel()
     requst.set_price(100);
     requst.set_goods("apple");
     RpcController control;
-    control.SetMsgId("99998888");
+    control.SetMsgId("9912312998888");
 
     std::shared_ptr<RpcClosure> closure = std::make_shared<RpcClosure>(nullptr,[=]{return true;});
     control.SetTimeout(10000);
-    mychannel.Init(NULL, NULL, NULL, NULL); 
-    Order_Stub(&mychannel).makeOrder(&control, &requst, &reponse, closure.get());
+    mychannel.Init(NULL, NULL, NULL, NULL);
+    for(int i=0;i<10000;i++)
+    {
+        Order_Stub(&mychannel).makeOrder(&control, &requst, &reponse, closure.get());
+    }
+    //printf(" size = %d,reponse.order_id = %s\n",reponse.order_id().size(),reponse.order_id().c_str());
 
 }
 
 int main(int argc, char *argv[])
 {
     
-    Config::SetGlobalConfig("/home/pexlor/Downloads/rpc/conf/rocket.xml");
+    Config::SetGlobalConfig("/root/Downloads/MY-RPC/conf/rocket.xml");
     Logger::Init();
+    // 获取开始时间点
+    auto start = std::chrono::high_resolution_clock::now();
+
     testRpcChannel();
+    
+        // 获取结束时间点
+    auto end = std::chrono::high_resolution_clock::now();
+    
+    // 计算持续时间
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    
+    // 输出持续时间
+    std::cout << "Total time taken: " << duration.count() << " milliseconds" <<" id :" << argv[1] << std::endl;
 } 
 

@@ -63,7 +63,15 @@ void TcpServer::newconnction(std::unique_ptr<Socket> clientsock) //accept会调�
     //printf("TcpServer: %d\n",clientsock->fd()%threadnum_);
     int sockfd = clientsock->fd();
     spConnection conn(new Connection(subloops_[sockfd%threadnum_].get(),std::move(clientsock)));
-    conn->setonmessagecallback(std::bind(&TcpServer::onmessage,this,std::placeholders::_1,std::placeholders::_2));
+    printf("set call back\n");
+
+    std::function<void(spConnection ,std::string &)> a =  std::bind(&TcpServer::onmessage,this,std::placeholders::_1,std::placeholders::_2);
+    if(a==nullptr)
+    {
+        printf("big error\n");
+        exit(-1);
+    }
+    conn->setonmessagecallback(a);
     conn->setclosecallback(std::bind(&TcpServer::closeconnection,this,std::placeholders::_1));
     conn->seterrorcallback(std::bind(&TcpServer::errorconnection,this,std::placeholders::_1));
     conn->setcomplatecallback(std::bind(&TcpServer::sendcomplate,this,std::placeholders::_1));

@@ -1,4 +1,4 @@
-#include "../rocket/net/PxLib/ThreadPoll.h"
+#include "ThreadPoll.h"
 #include <iostream>
 class ThreadPoll;
 ThreadPoll threadpoll(2,"io",4,5);

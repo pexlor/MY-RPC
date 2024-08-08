@@ -93,7 +93,7 @@ void Connection::onmessagecallback()
     {
         bzero(buffer,sizeof(buffer));
         ssize_t nread = recv(fd(),buffer,sizeof(buffer)-1,0);
-        printf("rece nread %d\n",nread);
+        //printf("rece nread %d\n",nread);
         if(nread > 0)
         {
             inputbuffer_.append(buffer,nread);
@@ -108,8 +108,14 @@ void Connection::onmessagecallback()
                 std::string message;
                 if(inputbuffer_.pickmessage(message)==false) break;
                 lastatime_ = Timestamp::now();
+                if(onmessagecallback_ == nullptr)
+                {
+                    printf("callback error\n");
+                    exit(-1);
+                }
                 onmessagecallback_(shared_from_this(),message); 
             }
+            //printf("in connection");
             break;
         }else if(nread == 0)
         {
@@ -119,25 +125,26 @@ void Connection::onmessagecallback()
     }
 }
 
-void Connection::sendinloop(const char * data ,size_t size)
+void Connection::sendinloop( std::shared_ptr<std::string> data ,size_t size)
 {
-    outputbuffer_.appendwithsep(data,size);//放入发送缓冲区
+    outputbuffer_.appendwithsep(data.get()->c_str(),size);//放入发送缓冲区
     clientchannel_->enablewriting();
 }
 
 void Connection::send(const char * data ,size_t size)
 {
     if(disconnect_ == true){
-        //printf("连接已断开！\n");
         return;
     }
+    std::shared_ptr<std::string> temp(new std::string);
+    temp->assign(data,size);
     if(loop_->isinloopthread())//是否为io线程
     {
-        sendinloop(data,size);
+        sendinloop(temp,size);
     }else
     {
         //交给IO线程执行
-        loop_->queueinloop(std::bind(&Connection::sendinloop,this,data,size));
+        loop_->queueinloop(std::bind(&Connection::sendinloop,this,temp,size));
     }
 }
 

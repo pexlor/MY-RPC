@@ -79,18 +79,15 @@ void RPCServer::HandleMessage(spConnection conn,std::string &message)//业务处
 
 void RPCServer::OnMessage(spConnection conn,std::string &message)
 {
-    std::cout << "recevie message\n"; 
+    //std::cout << "recevie message\n"; 
     std::vector<AbstractProtocol::s_ptr> result;
     std::vector<AbstractProtocol::s_ptr> reply_messages;
     m_coder->decode(result, message);//解码
-    //std::cout << "message decode\t" << result.size() << std::endl; 
     for (size_t i = 0; i < result.size(); i++) {
         // 针对每一个请求，调用 Rpc 方法，获取响应 message
         // 将响应 message 放入到发送缓冲区，监听可写事件回包
         //INFOLOG("successfully get request[%s] from client [%s]", result[i]->m_msg_id.c_str(), m_peer_addr->toString().c_str());
         std::shared_ptr<TinyPBProtocol> message = std::make_shared<TinyPBProtocol>();
-        // message->m_pb_data = "hello. this is rocket rpc test data";
-        // message->m_msg_id = result[i]->m_msg_id;
         RpcDispatcher::GetRpcDispatcher()->dispatch(result[i], message); //处理请求
         reply_messages.push_back(message);
     }
@@ -99,7 +96,6 @@ void RPCServer::OnMessage(spConnection conn,std::string &message)
     m_coder->encode(reply_messages, m_out_buffer);
     DEBUGLOG("encode ok");
     conn->send(m_out_buffer.c_str(),m_out_buffer.size());
-    std::cout << "message send\n";
 }
 
 void RPCServer::HandleSendComplate(spConnection conn)

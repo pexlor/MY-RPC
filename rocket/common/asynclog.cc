@@ -65,9 +65,7 @@ void AsyncLogger::AsyncLoggerLoop()
             std::unique_lock<std::mutex> lock(mutex_);
             if(buffers_.empty())
             {
-                printf("i im wait\n");
                 cond_.wait_for(lock,std::chrono::seconds(flushInterval_));
-                printf("i im wait2\n");
             }
 
             buffers_.push_back(std::move(currentBuf_));
@@ -77,7 +75,6 @@ void AsyncLogger::AsyncLoggerLoop()
             {
                 nextBuf_ = std::move(newBuffer2);
             }
-
         }
         assert(!buffersToWrite.empty());
         
@@ -113,7 +110,6 @@ void AsyncLogger::AsyncLoggerLoop()
         }
         // 清空buffersToWrite
         buffersToWrite.clear();
-        printf("asyncLogger is write\n");
         write(fileFd_,output.c_str(),output.size());
         output = "";
     }
@@ -125,7 +121,6 @@ void AsyncLogger::AsyncLoggerLoop()
 void AsyncLogger::start()
 {
     if(isRuning_){
-        printf("asyncLogger is run\n");
         return;
     }
     isRuning_ = true;

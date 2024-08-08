@@ -21,17 +21,13 @@ public:
                        const ::makeOrderRequest* request,
                        ::makeOrderResponse* response,
                        ::google::protobuf::Closure* done) {
-
-        //APPDEBUGLOG("start sleep 5s");
-        //sleep(5);
-        //APPDEBUGLOG("end sleep 5s");
+        
         if (request->price() < 10) {
             response->set_ret_code(-1);
             response->set_res_info("short balance");
             return;
         }
         response->set_order_id("20230829");
-        //APPDEBUGLOG("makeOrder success.");
     }
 };
 
@@ -42,8 +38,7 @@ int main(int argc , char * argv[])
         printf("usgae :./tecepoll ip port\n");
         return -1;
     }
-
-    Config::SetGlobalConfig("/home/pexlor/Downloads/reactor/conf/rocket.xml");
+    Config::SetGlobalConfig("/root/Downloads/MY-RPC/conf/rocket.xml");
     Logger::Init();
     std::shared_ptr<OrderImpl> service = std::make_shared<OrderImpl>();
     RPCServer rpcServer(argv[1],atoi(argv[2]),3,3);

@@ -27,7 +27,6 @@ void TinyPBCoder::encode(std::vector<AbstractProtocol::s_ptr>& messages, std::st
         }
     }
     out_buffer = result;
-    printf(" out buff:%d\n",out_buffer.size());
 }
 
 // 将 buffer 里面的字节流转换为 message 对象
@@ -153,7 +152,6 @@ const char* TinyPBCoder::encodeTinyPB(std::shared_ptr<TinyPBProtocol> message, i
 
     char* buf = reinterpret_cast<char*>(malloc(pk_len+1));
     char* tmp = buf;
-    printf("pklen:%d\n",pk_len);
     *tmp = TinyPBProtocol::PB_START;
     tmp++;
 

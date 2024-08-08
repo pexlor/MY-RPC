@@ -39,6 +39,7 @@ LogEvent::LogEvent(LogLevel level)
 {
     m_level = level;
 }
+
 std::string LogEvent::getFileName()
 {
     return m_file_name;
