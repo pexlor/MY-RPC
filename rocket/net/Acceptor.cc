@@ -25,9 +25,9 @@ Acceptor::Acceptor(EventLoop* loop,const std::string &ip , uint16_t port):loop_(
 void Acceptor::newconnction()
 {
     InetAddress clientaddr;
-
     std::unique_ptr<Socket> clientsock(new Socket(servsock_.accept(clientaddr)));
     clientsock->setipport(clientaddr.ip(),clientaddr.port());
+    printf("new connect ip:%s,port:%d \n",clientaddr.ip(),clientaddr.port());
     newconnectioncb_(std::move(clientsock));
 }
 
