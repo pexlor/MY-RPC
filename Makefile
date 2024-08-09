@@ -2,18 +2,18 @@ PATH_BIN = bin
 PATH_LIB = lib
 PATH_OBJ = obj
 
-PATH_ROCKET = rocket
-PATH_COMM = $(PATH_ROCKET)/common
-PATH_NET = $(PATH_ROCKET)/net
-PATH_CODER = $(PATH_ROCKET)/server/Rpc/coder
-PATH_RPC = $(PATH_ROCKET)/server/Rpc
+PATH_SRC = src
+PATH_COMM = $(PATH_SRC)/common
+PATH_NET = $(PATH_SRC)/net
+PATH_CODER = $(PATH_SRC)/server/Rpc/coder
+PATH_RPC = $(PATH_SRC)/server/Rpc
 
 PATH_TESTCASES = test
 
-# will install lib to /usr/lib/librocket.a
+# will install lib to /usr/lib/librpc.a
 PATH_INSTALL_LIB_ROOT = /usr/local/lib
 
-# will install all header file to /usr/include/rocket
+# will install all header file to /usr/include/rpc
 PATH_INSTALL_INC_ROOT = /usr/include
 
 PATH_INSTALL_INC_COMM = $(PATH_INSTALL_INC_ROOT)/$(PATH_COMM)
@@ -29,7 +29,7 @@ CXX := g++
 
 CXXFLAGS += -g -O0 -std=c++11 -Wall -Wno-deprecated -Wno-unused-but-set-variable
 
-CXXFLAGS += -I./ -I$(PATH_ROCKET)	-I$(PATH_COMM) -I$(PATH_NET)  -I$(PATH_CODER) -I$(PATH_RPC) 
+CXXFLAGS += -I./ -I$(PATH_SRC)	-I$(PATH_COMM) -I$(PATH_NET)  -I$(PATH_CODER) -I$(PATH_RPC) 
 
 LIBS += /usr/local/lib/libprotobuf.a	/usr/lib/libtinyxml.a
 
@@ -43,7 +43,7 @@ ALL_TESTS :   $(PATH_BIN)/test_rpc_client $(PATH_BIN)/test_rpc_server $(PATH_BIN
 
 TEST_CASE_OUT :=  $(PATH_BIN)/test_rpc_client $(PATH_BIN)/test_rpc_server $(PATH_BIN)/test_log 
 
-LIB_OUT := $(PATH_LIB)/librocket.a
+LIB_OUT := $(PATH_LIB)/librpc.a
 
 
 $(PATH_BIN)/test_rpc_client: $(LIB_OUT)
@@ -56,7 +56,7 @@ $(PATH_BIN)/test_log: $(LIB_OUT)
 	$(CXX) $(CXXFLAGS) $(PATH_TESTCASES)/test_log.cc -o $@ $(LIB_OUT) $(LIBS) -ldl -pthread
 
 $(LIB_OUT): $(COMM_OBJ) $(NET_OBJ) $(CODER_OBJ) $(RPC_OBJ)
-	cd $(PATH_OBJ) && ar rcv librocket.a *.o && cp librocket.a ../lib/
+	cd $(PATH_OBJ) && ar rcv librpc.a *.o && cp librpc.a ../lib/
 
 $(PATH_OBJ)/%.o : $(PATH_COMM)/%.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -78,7 +78,7 @@ PRINT-% : ; @echo $* = $($*)
 
 # to clean 
 clean :
-	rm -f $(COMM_OBJ) $(NET_OBJ) $(TESTCASES) $(TEST_CASE_OUT) $(PATH_LIB)/librocket.a $(PATH_OBJ)/librocket.a $(PATH_OBJ)/*.o
+	rm -f $(COMM_OBJ) $(NET_OBJ) $(TESTCASES) $(TEST_CASE_OUT) $(PATH_LIB)/librpc.a $(PATH_OBJ)/librpc.a $(PATH_OBJ)/*.o
 
 # install
 install:
@@ -93,4 +93,4 @@ install:
 
 # uninstall
 uninstall:
-	rm -rf $(PATH_INSTALL_INC_ROOT)/rocket && rm -f $(PATH_INSTALL_LIB_ROOT)/librocket.a
+	rm -rf $(PATH_INSTALL_INC_ROOT)/rpc && rm -f $(PATH_INSTALL_LIB_ROOT)/librpc.a

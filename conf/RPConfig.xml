@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+    <log>
+        <log_level>DEBUG</log_level>
+        <log_file_name>RpcLog</log_file_name>
+        <log_file_path>/root/Downloads/MY-RPC/log/</log_file_path>
+        <enable_sync_log>false</enable_sync_log>
+        <log_asyn_flush_time>3</log_asyn_flush_time>
+    </log>
+    <server>
+        <port>5000</port>
+        <io_threads>4</io_threads>
+        <work_threads>4</work_threads>
+    </server>
+</root>

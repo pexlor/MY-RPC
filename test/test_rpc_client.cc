@@ -8,14 +8,14 @@
 #include <netinet/in.h>
 #include <string>
 #include <unistd.h>
-#include "rocket/common/log.h"
-#include "rocket/common/config.h"
-#include "rocket/server/Rpc/coder/abstract_protocol.h"
-#include "rocket/server/Rpc/coder/tinypb_coder.h"
-#include "rocket/server/Rpc/coder/tinypb_protocol.h"
-#include "rocket/server/Rpc/rpc_channel.h"
-#include "rocket/server/Rpc/rpc_closure.h"
-#include "rocket/server/Rpc/rpc_controller.h"
+#include "src/common/log.h"
+#include "src/common/config.h"
+#include "src/server/Rpc/coder/abstract_protocol.h"
+#include "src/server/Rpc/coder/tinypb_coder.h"
+#include "src/server/Rpc/coder/tinypb_protocol.h"
+#include "src/server/Rpc/rpc_channel.h"
+#include "src/server/Rpc/rpc_closure.h"
+#include "src/server/Rpc/rpc_controller.h"
 #include <google/protobuf/service.h>
 #include "order.pb.h"
 
@@ -29,7 +29,6 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <time.h>
-
 
 void testRpcChannel()
 {
@@ -45,31 +44,25 @@ void testRpcChannel()
     control.SetTimeout(10000);
     mychannel.Init(NULL, NULL, NULL, NULL);
     
-    printf("start tsak!\n");
-    for(int i=0;i<100000;i++)
+    for(int i=0;i<1000000;i++)
     {
         Order_Stub(&mychannel).makeOrder(&control, &requst, &reponse, closure.get());
     }
-    printf("end tsak!\n");
-    //printf(" size = %d,reponse.order_id = %s\n",reponse.order_id().size(),reponse.order_id().c_str());
 }
 
 int main(int argc, char *argv[])
 {
     
-    Config::SetGlobalConfig("/root/Downloads/MY-RPC/conf/rocket.xml");
+    Config::InitConfig("/root/Downloads/MY-RPC/conf/RPConfig.xml");
     Logger::Init();
     // 获取开始时间点
     auto start = std::chrono::high_resolution_clock::now();
-     std::cout << "start id taken: " <<  argv[1] << std::endl;
+    std::cout << "start id taken: " <<  argv[1] << std::endl;
     testRpcChannel();
-    
-        // 获取结束时间点
+    // 获取结束时间点
     auto end = std::chrono::high_resolution_clock::now();
-    
     // 计算持续时间
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
     // 输出持续时间
     std::cout << "Total time taken: " << duration.count() << " milliseconds" <<" id :" << argv[1] << std::endl;
 } 

@@ -1,5 +1,5 @@
-#include "../rocket/common/log.h"
-#include "../rocket/common/config.h"
+#include "../src/common/log.h"
+#include "../src/common/config.h"
 
 void * fun(void*)
 {
@@ -13,7 +13,7 @@ void * fun(void*)
 
 int main()
 {
-    Config::SetGlobalConfig("/root/Downloads/MY-RPC/conf/rocket.xml");
+    Config::InitConfig("/root/Downloads/MY-RPC/conf/rocket.xml");
     Logger::Init();
     pthread_t thread1;
     pthread_create(&thread1,NULL,&fun,NULL);

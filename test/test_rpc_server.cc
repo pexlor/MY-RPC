@@ -9,10 +9,10 @@
 #include <string>
 #include <unistd.h>
 #include <google/protobuf/service.h>
-#include "rocket/common/log.h"
-#include "rocket/common/config.h"
+#include "src/common/log.h"
+#include "src/common/config.h"
 #include "order.pb.h"
-#include "rocket/server/Rpc/rpc_server.h"
+#include "src/server/Rpc/rpc_server.h"
 
 class OrderImpl : public Order {
     
@@ -33,15 +33,10 @@ public:
 
 int main(int argc , char * argv[])
 {
-    if(argc != 3)
-    {
-        printf("usgae :./tecepoll ip port\n");
-        return -1;
-    }
-    Config::SetGlobalConfig("/root/Downloads/MY-RPC/conf/rocket.xml");
+    Config::InitConfig("/root/Downloads/MY-RPC/conf/RPConfig.xml");
     Logger::Init();
     std::shared_ptr<OrderImpl> service = std::make_shared<OrderImpl>();
-    RPCServer rpcServer(argv[1],atoi(argv[2]),3,3);
+    RPCServer rpcServer("127.0.0.1");
     rpcServer.RegisterRpcService(service);
     rpcServer.Start();
     return 0;
