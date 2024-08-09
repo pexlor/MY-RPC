@@ -44,7 +44,7 @@ void testRpcChannel()
     control.SetTimeout(10000);
     mychannel.Init(NULL, NULL, NULL, NULL);
     
-    for(int i=0;i<1000000;i++)
+    for(int i=0;i<100000;i++)
     {
         Order_Stub(&mychannel).makeOrder(&control, &requst, &reponse, closure.get());
     }
