@@ -5,11 +5,7 @@
 #include "Connection.h"
 #include <functional>
 
-/**
- * fd事件类
- * /
 class EventLoop;
-/*通道类，理解是对epoll中的events进行了封装，替代原来的fd为ptr指针*/
 class Channel
 {
 private:

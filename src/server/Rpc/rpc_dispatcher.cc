@@ -46,7 +46,7 @@ void RpcDispatcher::dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s
         return;
     }
     google::protobuf::Message* req_msg = service->GetRequestPrototype(method).New();//获得请求消息原型
-    DEBUGLOG("start parse from string");
+    
     
     if(!req_msg->ParseFromString(req_protocol->m_pb_data))//反序列化
     {
@@ -58,9 +58,6 @@ void RpcDispatcher::dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s
         return;
     }
 
-    DEBUGLOG("Get rpc request[%s]",req_msg->ShortDebugString().c_str());
-
-    DEBUGLOG("start parse from string");
     google::protobuf::Message* rsp_msg = service->GetResponsePrototype(method).New();
 
     RpcController rpcController;
@@ -69,10 +66,8 @@ void RpcDispatcher::dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s
     //rpcController.SetPeerAddr(connection->getPeerAddr());
     rpcController.SetMsgId(req_protocol->m_msg_id);
 
-    DEBUGLOG("start call method");
     service->CallMethod(method,&rpcController,req_msg,rsp_msg,NULL);
-    DEBUGLOG("end call method");
-    
+
     rsp_protocol->m_method_name = req_protocol->m_method_name;
     rsp_protocol->m_msg_id = req_protocol->m_msg_id;
 
@@ -87,8 +82,6 @@ void RpcDispatcher::dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s
     }
 
     rsp_protocol->m_err_code = 0;
-    DEBUGLOG("%s | dispatch success, request[%s], response[%s]", 
-        req_protocol->m_msg_id.c_str(), req_msg->ShortDebugString().c_str(), rsp_msg->ShortDebugString().c_str());
     if (req_msg != NULL) {
         delete req_msg;
         req_msg = NULL;

@@ -21,6 +21,5 @@ int main()
     pthread_create(&thread2,NULL,&fun,NULL);
     pthread_join(thread1,NULL);
     pthread_join(thread2,NULL);
-    //Logger::GetGloballLogger()->~Logger();
     return 0;
 }

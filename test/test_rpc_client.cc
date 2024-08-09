@@ -52,6 +52,7 @@ void testRpcChannel()
 
 int main(int argc, char *argv[])
 {
+    
     Config::InitConfig("/root/Downloads/MY-RPC/conf/RPConfig.xml");
     Logger::Init();
     // 获取开始时间点

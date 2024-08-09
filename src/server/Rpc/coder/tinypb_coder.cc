@@ -45,7 +45,6 @@ void TinyPBCoder::decode(std::vector<AbstractProtocol::s_ptr>& out_messages, std
                 // 读下去四个字节。由于是网络字节序，需要转为主机字节序  
                 if (i + 1 < buffer_size) {
                     pk_len = getInt32FromNetByte(&tmp[i+1]);
-                    DEBUGLOG("get pk_len = %d", pk_len);
                     // 结束符的索引
                     int j = i + pk_len - 1;
                     if (j >= buffer_size) {
@@ -55,7 +54,6 @@ void TinyPBCoder::decode(std::vector<AbstractProtocol::s_ptr>& out_messages, std
                         start_index = i;
                         end_index = j;
                         parse_success = true;
-                        DEBUGLOG("get end");
                         break;
                     }
                     
@@ -80,14 +78,12 @@ void TinyPBCoder::decode(std::vector<AbstractProtocol::s_ptr>& out_messages, std
                 continue;
             }
             message->m_msg_id_len = getInt32FromNetByte(&tmp[msg_id_len_index]);
-            DEBUGLOG("parse msg_id_len=%d", message->m_msg_id_len);
 
             int msg_id_index = msg_id_len_index + sizeof(message->m_msg_id_len);
             
             char msg_id[100] = {0};
             memcpy(&msg_id[0], &tmp[msg_id_index], message->m_msg_id_len);
             message->m_msg_id = std::string(msg_id);
-            DEBUGLOG("parse msg_id=%s", message->m_msg_id.c_str());
 
             int method_name_len_index = msg_id_index + message->m_msg_id_len;
             if (method_name_len_index >= end_index) {
@@ -101,7 +97,6 @@ void TinyPBCoder::decode(std::vector<AbstractProtocol::s_ptr>& out_messages, std
             char method_name[512] = {0};
             memcpy(&method_name[0], &tmp[method_name_index], message->m_method_name_len);
             message->m_method_name = std::string(method_name);
-            DEBUGLOG("parse method_name=%s", message->m_method_name.c_str());
 
             int err_code_index = method_name_index + message->m_method_name_len;
             if (err_code_index >= end_index) {
@@ -109,6 +104,7 @@ void TinyPBCoder::decode(std::vector<AbstractProtocol::s_ptr>& out_messages, std
                 ERRORLOG("parse error, err_code_index[%d] >= end_index[%d]", err_code_index, end_index);
                 continue;
             }
+
             message->m_err_code = getInt32FromNetByte(&tmp[err_code_index]);
 
 
@@ -146,10 +142,7 @@ const char* TinyPBCoder::encodeTinyPB(std::shared_ptr<TinyPBProtocol> message, i
     if (message->m_msg_id.empty()) {
         message->m_msg_id = "123456789";
     }
-    DEBUGLOG("msg_id = %s", message->m_msg_id.c_str());
     int pk_len = 2 + 24 + message->m_msg_id.length() + message->m_method_name.length() + message->m_err_info.length() + message->m_pb_data.length();
-    DEBUGLOG("pk_len = %", pk_len);
-
     char* buf = reinterpret_cast<char*>(malloc(pk_len+1));
     char* tmp = buf;
     *tmp = TinyPBProtocol::PB_START;

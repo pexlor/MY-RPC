@@ -10,6 +10,6 @@
     <server>
         <port>5000</port>
         <io_threads>4</io_threads>
-        <work_threads>4</work_threads>
+        <work_threads>10</work_threads>
     </server>
 </root>
