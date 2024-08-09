@@ -1,7 +1,7 @@
 #include "rpc_channel.h"
 #include "coder/abstract_coder.h"
 #include "coder/tinypb_coder.h"
-
+static int iiii =0;
 RpcChannel::RpcChannel(const char * ip ,uint16_t port):
     m_ip(ip),
     m_port(port)
@@ -61,7 +61,7 @@ void RpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method,
     }
 
     if (connect(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
-        std::cerr << "Connection Failed" << std::endl;
+        std::cerr << "Connection Failed :" << iiii <<std::endl;
         close(sockfd);
         return;
     }
@@ -98,6 +98,7 @@ void RpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method,
         return;
     }
     close(sockfd);
+    ++iiii;
 }
 
 void RpcChannel::Init(controller_s_ptr controller, message_s_ptr req, message_s_ptr rsp, closure_s_ptr done) {

@@ -30,7 +30,7 @@ Connection::Connection(EventLoop* loop,std::unique_ptr<Socket> clientsock)
 
 Connection::~Connection()
 {
-    
+    std::cout << "connection over\n";
 }
 
 int Connection::fd() const
