@@ -44,12 +44,14 @@ void testRpcChannel()
     std::shared_ptr<RpcClosure> closure = std::make_shared<RpcClosure>(nullptr,[=]{return true;});
     control.SetTimeout(10000);
     mychannel.Init(NULL, NULL, NULL, NULL);
-    for(int i=0;i<10000;i++)
+    
+    printf("start tsak!\n");
+    for(int i=0;i<100000;i++)
     {
         Order_Stub(&mychannel).makeOrder(&control, &requst, &reponse, closure.get());
     }
+    printf("end tsak!\n");
     //printf(" size = %d,reponse.order_id = %s\n",reponse.order_id().size(),reponse.order_id().c_str());
-
 }
 
 int main(int argc, char *argv[])
@@ -59,7 +61,7 @@ int main(int argc, char *argv[])
     Logger::Init();
     // 获取开始时间点
     auto start = std::chrono::high_resolution_clock::now();
-
+     std::cout << "start id taken: " <<  argv[1] << std::endl;
     testRpcChannel();
     
         // 获取结束时间点

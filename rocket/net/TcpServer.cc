@@ -8,9 +8,10 @@ TcpServer::TcpServer(const char * ip ,uint16_t port,int threadnum)
 {
     mainloop_->setepolltimeoutcallback(std::bind(&TcpServer::epolltimeout,this,std::placeholders::_1));
     acceptor_.setnewconnectioncb(std::bind(&TcpServer::newconnction,this,std::placeholders::_1));//绑定连接处理函数
+
     for(int i=0;i<threadnum_;i++)
     {
-        subloops_.emplace_back(new EventLoop(false,3,6));//时间循环组
+        subloops_.emplace_back(new EventLoop(false,30,60));//时间循环组
         subloops_[i]->setepolltimeoutcallback(std::bind(&TcpServer::epolltimeout,this,std::placeholders::_1));//绑定连接处理函数
         subloops_[i]->settimeoutcallback(std::bind(&TcpServer::removeconnection,this,std::placeholders::_1));
         threadpoll_.addtask(std::bind(&EventLoop::run,subloops_[i].get()));//加入线程池队列
@@ -34,6 +35,7 @@ void TcpServer::stop()
     {
         subloops_[ii]->stop();
     }
+    threadpoll_.Stop();
 }
 
 
@@ -41,12 +43,10 @@ void TcpServer::closeconnection(spConnection  conn)
 {
     closeconnection_(conn);
     subloops_[conn->fd()%threadnum_]->closeconnection(conn->fd());
-    
     {
         std::lock_guard<std::mutex> gd(mmutex);
         conns_.erase(conn->fd());
     }
-    //delete conn;
 }
 
 void TcpServer::errorconnection(spConnection  conn)
@@ -63,7 +63,6 @@ void TcpServer::newconnction(std::unique_ptr<Socket> clientsock) //accept会调�
     //printf("TcpServer: %d\n",clientsock->fd()%threadnum_);
     int sockfd = clientsock->fd();
     spConnection conn(new Connection(subloops_[sockfd%threadnum_].get(),std::move(clientsock)));
-    printf("set call back\n");
 
     std::function<void(spConnection ,std::string &)> a =  std::bind(&TcpServer::onmessage,this,std::placeholders::_1,std::placeholders::_2);
     if(a==nullptr)
@@ -75,13 +74,12 @@ void TcpServer::newconnction(std::unique_ptr<Socket> clientsock) //accept会调�
     conn->setclosecallback(std::bind(&TcpServer::closeconnection,this,std::placeholders::_1));
     conn->seterrorcallback(std::bind(&TcpServer::errorconnection,this,std::placeholders::_1));
     conn->setcomplatecallback(std::bind(&TcpServer::sendcomplate,this,std::placeholders::_1));
-
     {
         std::lock_guard<std::mutex> gd(mmutex);
         conns_[conn->fd()] = conn;
     }
-
     subloops_[conn->fd()%threadnum_]->newconnection(conn);
+    printf("new connection fd: %d\n",conn->fd());
     newconnction_(conn);
 }
 

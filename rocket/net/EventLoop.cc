@@ -1,16 +1,6 @@
 
 #include "EventLoop.h"
 
-/*class EventLoop
-{
-private:
-    Epoll * ep_ = nullptr;
-public:
-    EventLoop();
-    ~EventLoop();
-
-    void run();
-};*/
 
 int createtimerfd(int sec = 5)
 {
@@ -57,11 +47,11 @@ void EventLoop::run()
         if(rchannels.size() == 0) //超时情况
         {
             epolltimeoutcallback_(this); //回调函数
-            continue;
-        }
-        for(auto &ch : rchannels)
-        {
-            ch->handleevent();//执行ch的信息处理函数
+        }else{
+            for(auto &ch : rchannels)
+            {
+                ch->handleevent();//执行ch的信息处理函数
+            }
         }
     }
 }
@@ -104,7 +94,7 @@ void EventLoop::queueinloop(std::function<void()> fn)
         std::lock_guard<std::mutex> gd(mutex_);
         taskqueue_.push(fn);
     }
-    //printf("Wake up\n");
+ 
     wakeup();
 }
 
@@ -112,7 +102,6 @@ void EventLoop::wakeup()
 {
     uint64_t val = 1;
     write(wakeupfd_,&val,sizeof(val));
-    //printf("Wake up ok\n");
 }
 
 void EventLoop::handlewakeup()
@@ -148,13 +137,9 @@ void EventLoop::handletimer()
         {
             if(aa->second->timeout(nowtime,timeout_))
             {
-                aa->second->close();
-
-                {
-                    std::lock_guard<std::mutex> gd(mmutex_);
-                    aa = conns_.erase(aa);
-                }
                 timeoutcallback_(aa->first);
+                std::lock_guard<std::mutex> gd(mmutex_);
+                aa = conns_.erase(aa);
             }else
             {
                 aa++;

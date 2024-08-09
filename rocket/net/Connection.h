@@ -44,7 +44,6 @@ public:
     uint16_t port() const;
     void send(const char * data ,size_t size);
     void sendinloop(std::shared_ptr<std::string> data ,size_t size);
-    void close();
 
     void onmessagecallback();
     void closecallback();

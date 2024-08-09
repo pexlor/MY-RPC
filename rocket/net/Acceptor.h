@@ -15,7 +15,7 @@ private:
     Channel acceptchannel_;
     std::function<void(std::unique_ptr<Socket>)> newconnectioncb_;
 public:
-    Acceptor(EventLoop* loop,const char * ip , uint16_t port);
+    Acceptor(EventLoop* loop,const std::string & ip , uint16_t port);
     ~Acceptor();
     void setnewconnectioncb(std::function<void(std::unique_ptr<Socket>)> fn);
     void newconnction();

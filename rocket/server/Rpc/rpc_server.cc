@@ -1,21 +1,5 @@
 #include "rpc_server.h"
 
-/*class EchoServer
-{
-private:
-    TcpServer tcpserver_;
-public:
-    EchoServer(const char * ip ,uint16_t port);
-    ~EchoServer();
-    void Start();
-    void HandleNewConnction(Socket* clientsock);
-    void HandleCloseConnection(Connection * conn );
-    void HandleErrorConnection(Connection * conn);
-    void HandleMessage(Connection * conn,string);
-    void HandleSendComplate(Connection * conn);
-    void HandleEpollTimeout(EventLoop *loop);
-};*/
-
 RPCServer::RPCServer(const char *ip ,const uint16_t port,int threadnum,int workthreadnum)
                         :tcpserver_(ip,port,threadnum),threadpoll_(workthreadnum,"work")
 {

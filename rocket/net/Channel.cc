@@ -26,7 +26,6 @@ void Channel::useet() //设置边缘触发
 void Channel::enablereading() //监视写事件
 {
     events_ |= EPOLLIN;
-    //printf("5\n");
     loop_->updatechannel(this);
 }
 
@@ -72,7 +71,6 @@ void Channel::handleevent()
         readcallback_();
     }else if(revents() & EPOLLOUT)
     {
-        //std::cout << "int epoll out\n";
         writecallback_();
     }else
     {
@@ -105,21 +103,18 @@ void Channel::disablereading()
 void Channel::enablewriting()
 {
     events_ |= EPOLLOUT;
-   // printf("2\n");
     loop_->updatechannel(this);
 }
 
 void Channel::disablewriting()
 {
     events_ &= ~EPOLLOUT;
-    //printf("3\n");
     loop_->updatechannel(this);
 }
 
 void Channel::disableall()
 {
     events_ = 0;
-   // printf("4\n");
     loop_->updatechannel(this);
 }
 

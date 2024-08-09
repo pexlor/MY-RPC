@@ -1,25 +1,11 @@
 #include "Connection.h"
 
-/*
-class Connection
-{
-private:
-    EventLoop *loop_ = nullptr;
-    Socket *clientsock_ = nullptr;
-    Channel *clientchannel_ = nullptr;
-public:
-    Connection(EventLoop *loop,Socket *clientsock);
-    ~Connection();
-};
-*/
 Connection::Connection(EventLoop* loop,std::unique_ptr<Socket> clientsock)
+    :loop_(loop),
+    clientsock_(std::move(clientsock)),
+    disconnect_(false),
+    clientchannel_(new Channel(loop_,clientsock_->fd())) 
 {
-    loop_ = loop;
-    clientsock_ = std::move(clientsock);
-    disconnect_ = false;
-    
-    clientchannel_ = std::unique_ptr<Channel>(new Channel(loop_,clientsock_->fd()));
-
     clientchannel_->useet();
     clientchannel_->setreadcallback(std::bind(&Connection::onmessagecallback,this));
     clientchannel_->setclosecallback(std::bind(&Connection::closecallback,this));
@@ -48,23 +34,18 @@ uint16_t Connection::port() const
     return clientsock_->port();
 }
 
-void Connection::close()
-{
-    disconnect_ = true;
-    clientchannel_->remove();
-}
-
 void Connection::closecallback()
 {
-    close();
+    disconnect_ = true;
+    clientchannel_->remove(); // 可能是这有问题
     closecallback_(shared_from_this());
 }
 
 void Connection::errorcallback()
 {
+    disconnect_ = true;
     clientchannel_->remove();
     errorcallback_(shared_from_this());
-    printf("conncet %d close!\n",fd());
 }
 
 void Connection::setclosecallback(std::function<void(spConnection)> fn)
@@ -110,12 +91,15 @@ void Connection::onmessagecallback()
                 lastatime_ = Timestamp::now();
                 if(onmessagecallback_ == nullptr)
                 {
-                    printf("callback error\n");
-                    exit(-1);
+                    printf("onmessagecallback_ error in fd: %d\n",this->fd());
+                    //exit(-1);
+                }
+                if(shared_from_this() == nullptr)
+                {
+                    printf("shared_from_this error in fd: %d\n",this->fd());
                 }
                 onmessagecallback_(shared_from_this(),message); 
             }
-            //printf("in connection");
             break;
         }else if(nread == 0)
         {

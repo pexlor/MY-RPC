@@ -14,7 +14,7 @@ private:
     sockaddr_in addr_;
 public:
     InetAddress();
-    InetAddress(const char *ip,uint16_t port);
+    InetAddress(const std::string & ip ,uint16_t port);
     InetAddress(const sockaddr_in addr);
     
     ~InetAddress();

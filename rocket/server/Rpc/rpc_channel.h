@@ -62,21 +62,19 @@ public:
 
     google::protobuf::Closure* GetClosure();
 
-    //TcpClient* GetTcpClient();
-
-    //TimerEvent::s_ptr GetTimerEvnet();
 
 private:
     std::string  m_ip;
     uint16_t  m_port;
-
+    int sockfd;
+    struct sockaddr_in server_addr;
     controller_s_ptr m_controller {nullptr};
     message_s_ptr m_request {nullptr};
     message_s_ptr m_response {nullptr};
     closure_s_ptr m_closure {nullptr};
 
     bool m_is_init {false};
-
+    std::atomic<bool> isConnect_{false};
     AbstractCoder* m_coder_;
 
 };

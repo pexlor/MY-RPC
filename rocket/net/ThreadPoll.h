@@ -38,7 +38,6 @@ private:
 private:
     void Threadwork();
     void clearDeadThread();
-    void joinDeadThreadQueue();
 public:
     ThreadPoll(size_t minthreadnum,const std::string &threadtype,size_t maxThreadnum = 0,size_t timeOut = 180);
 

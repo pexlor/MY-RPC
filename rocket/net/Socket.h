@@ -36,5 +36,4 @@ public:
     void bind(const InetAddress & servaddr);
     void listen(int nn);
     int accept(InetAddress & clientaddr);
-    int connect(InetAddress& clientaddr);
 };

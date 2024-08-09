@@ -1,10 +1,10 @@
 #include "InetAddress.h"
 
-InetAddress::InetAddress(const char *ip,uint16_t port)
+InetAddress::InetAddress(const std::string & ip,uint16_t port)
 {
     addr_.sin_family = AF_INET;
     addr_.sin_port = htons(port);
-    inet_pton(AF_INET,ip,&addr_.sin_addr);
+    inet_pton(AF_INET,ip.c_str(),&addr_.sin_addr);
 }
 
 InetAddress::InetAddress(const sockaddr_in addr):addr_(addr)

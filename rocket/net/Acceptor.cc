@@ -3,7 +3,7 @@
    Socket * servsock_ = nullptr;
    Channel * acceptchannel_ = nullptr;
    */
-Acceptor::Acceptor(EventLoop* loop,const char * ip , uint16_t port):loop_(loop)
+Acceptor::Acceptor(EventLoop* loop,const std::string &ip , uint16_t port):loop_(loop)
                     ,servsock_(createnonblocking())
                     ,acceptchannel_(loop_,servsock_.fd())
 {
@@ -25,6 +25,7 @@ Acceptor::Acceptor(EventLoop* loop,const char * ip , uint16_t port):loop_(loop)
 void Acceptor::newconnction()
 {
     InetAddress clientaddr;
+
     std::unique_ptr<Socket> clientsock(new Socket(servsock_.accept(clientaddr)));
     clientsock->setipport(clientaddr.ip(),clientaddr.port());
     newconnectioncb_(std::move(clientsock));

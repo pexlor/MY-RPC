@@ -1,4 +1,5 @@
 ./test_rpc_client 1 &
 ./test_rpc_client 2 &
-
-
+./test_rpc_client 3 &
+./test_rpc_client 4 &
+./test_rpc_client 5 &

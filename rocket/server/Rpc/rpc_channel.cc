@@ -1,15 +1,24 @@
 #include "rpc_channel.h"
 #include "coder/abstract_coder.h"
 #include "coder/tinypb_coder.h"
-static int iiii =0;
 RpcChannel::RpcChannel(const char * ip ,uint16_t port):
     m_ip(ip),
     m_port(port)
 {
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
     m_coder_= new TinyPBCoder();
+
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(m_port);
+    if (inet_pton(AF_INET, m_ip.c_str(), &(server_addr.sin_addr)) <= 0) {
+        std::cerr << "Invalid address/ Address not supported" << std::endl;
+        close(sockfd);
+        exit(-1);
+    }
 }
 
 RpcChannel::~RpcChannel() {
+    close(sockfd);
     DEBUGLOG("~RpcChannel");
 }
 
@@ -50,55 +59,49 @@ void RpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method,
         return;
     }
 
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    struct sockaddr_in server_addr;
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(m_port);
-    if (inet_pton(AF_INET, m_ip.c_str(), &(server_addr.sin_addr)) <= 0) {
-        std::cerr << "Invalid address/ Address not supported" << std::endl;
-        close(sockfd);
-        return;
-    }
-
-    if (connect(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
-        std::cerr << "Connection Failed :" << iiii <<std::endl;
-        close(sockfd);
-        return;
-    }
-
     std::vector<AbstractProtocol::s_ptr> messages;
     messages.push_back(req_protocol);
-    printf("messages size: %d\n",messages.size());
 
     std::string out_buf;
     m_coder_->encode(messages,out_buf);
-    //printf("encode ok %d\n",out_buf.size());
 
-    send(sockfd,out_buf.c_str(),out_buf.size(),0);
-    //printf("send ok\n");
+ConnectionErrorGoTO:
+    if(!isConnect_)
+    {
+        printf("in isConnect_!\n");
+        if (connect(sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
+            close(sockfd);
+            return;
+        }
+        printf("in isConnect_ over!\n");
+        isConnect_ = true;
+    }
+    
+    if(send(sockfd,out_buf.c_str(),out_buf.size(),0) == -1 && errno == ENOTCONN)
+    {
+        printf("send error!\n");
+        isConnect_ = false;
+        goto ConnectionErrorGoTO;
+    }
     char buf[1024] = {0};
 
     int len = recv(sockfd,buf,1024,0);
-    printf("start:%x\n",buf[0]);
-    printf("recv ok %d\n",len);
     std::vector<AbstractProtocol::s_ptr> out_messages;
 
     std::string out_buf2;
     out_buf2.assign(buf, len);
-    printf("start:%x, end :%x\n",out_buf2.c_str()[0],out_buf2.c_str()[out_buf2.size()-1]);
     m_coder_->decode(out_messages,out_buf2);
     if(out_messages.size() != 1)
     {
         printf("decode error\n");
         return;
     }
+
     if(!response->ParseFromString(std::dynamic_pointer_cast<TinyPBProtocol>(out_messages[0])->m_pb_data))//反序列化
     {
         printf("ParseFromString error\n");
         return;
     }
-    close(sockfd);
-    ++iiii;
 }
 
 void RpcChannel::Init(controller_s_ptr controller, message_s_ptr req, message_s_ptr rsp, closure_s_ptr done) {

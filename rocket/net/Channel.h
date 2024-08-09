@@ -5,7 +5,9 @@
 #include "Connection.h"
 #include <functional>
 
-
+/**
+ * fd事件类
+ * /
 class EventLoop;
 /*通道类，理解是对epoll中的events进行了封装，替代原来的fd为ptr指针*/
 class Channel
@@ -23,6 +25,7 @@ private:
 public:
     Channel(EventLoop* loop,int fd);
     ~Channel();
+
     int fd();
     void useet(); //设置边缘触发
     void enablereading(); //监视写事件
@@ -38,8 +41,7 @@ public:
     uint32_t revents();
 
     void handleevent();
-    //void newconnction(Socket * servsock);
-    //void onmessage();
+    
     void setreadcallback(std::function<void()> fn);
     void setclosecallback(std::function<void()> fn);
     void seterrorcallback(std::function<void()> fn);

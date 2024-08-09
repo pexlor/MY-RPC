@@ -1,23 +1,6 @@
 #include "Socket.h"
 
-/*
-class Socket
-{
-private:
-    const int fd_;
-public:
-    Socket(int fd);
-    ~Socket();
 
-    int fd() const;
-    void setreuseaddr(bool on);
-    void setreuseport(bool on);
-    void settcpnodelay(bool on);
-    void setkeepalive(bool on);
-    void bind(const InetAddress & servaddr);
-    void listen(int nn = 128);
-    void accept(const InetAddress & clientaddr);
-};*/
 
 int createnonblocking()
 {
@@ -42,7 +25,7 @@ Socket::~Socket()
 int Socket::fd() const
 {
     //std::cout << fd_ <<std::endl;
-    return this->fd_;
+    return fd_;
 }
 
 std::string Socket::ip() const
@@ -60,16 +43,19 @@ void Socket::setreuseaddr(bool on)
     int opt = on ? 1 : 0;
     setsockopt(fd_,SOL_SOCKET,SO_REUSEADDR,&opt,static_cast<socklen_t>(sizeof opt));
 }
+
 void Socket::setreuseport(bool on)
 {
     int opt = on ? 1 : 0;
     setsockopt(fd_,SOL_SOCKET,SO_REUSEPORT,&opt,static_cast<socklen_t>(sizeof opt));
 }
+
 void Socket::settcpnodelay(bool on)
 {
     int opt = on ? 1 : 0;
     setsockopt(fd_,SOL_SOCKET,TCP_NODELAY,&opt,static_cast<socklen_t>(sizeof opt));
 }
+
 void Socket::setkeepalive(bool on)
 {
     int opt = on ? 1 : 0;
@@ -109,14 +95,4 @@ int Socket::accept(InetAddress& clientaddr)
     int clientfd = accept4(fd_,(struct sockaddr *)&peeraddr,&len,SOCK_NONBLOCK);
     clientaddr.setaddr(peeraddr);
     return clientfd;
-}
-
-int Socket::connect(InetAddress& clientaddr)
-{
-    if(::connect(fd_, (struct sockaddr *)clientaddr.addr(),sizeof(struct sockaddr_in))!=-1)
-    {
-        return 1;
-    }
-    return -1;
-
 }
