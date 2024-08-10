@@ -33,7 +33,7 @@ public:
 
 int main(int argc , char * argv[])
 {
-    Config::InitConfig("/root/Downloads/MY-RPC/conf/RPConfig.xml");
+    //Config::InitConfig("/root/Downloads/MY-RPC/conf/RPConfig.xml");
     Logger::Init();
     std::shared_ptr<OrderImpl> service = std::make_shared<OrderImpl>();
     RPCServer rpcServer("127.0.0.1");
