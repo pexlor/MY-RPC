@@ -110,6 +110,7 @@ void RpcChannel::Init(controller_s_ptr controller, message_s_ptr req, message_s_
     m_request = req;
     m_response = rsp;
     m_closure = done;
+    //todo：添加zookeepor获取服务器IP
     m_is_init = true;
 }
 

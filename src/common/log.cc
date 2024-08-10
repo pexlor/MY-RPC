@@ -94,7 +94,7 @@ void Logger::Init()
     
     g_logger.reset(new Logger(global_log_levle));
 
-    //g_logger->asyncLog_.start();
+    g_logger->asyncLog_.start();
 }
 
 Logger * Logger::GetGloballLogger()
@@ -119,7 +119,7 @@ void Logger::pushlog(const std::string & msg)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     if(Config::GetGlobalConfig()->m_enable_sync_log) m_buffer.push(msg);
-    //asyncLog_.append(msg,msg.size());
+    asyncLog_.append(msg,msg.size());
 }
 
 Logger::~Logger()
