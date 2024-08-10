@@ -16,7 +16,9 @@ class Channel;
 using spConnection = std::shared_ptr<Connection>;
 
 class EventLoop;
-
+/**
+ * @param Connection类，负责创建连接
+*/
 class Connection : public std::enable_shared_from_this<Connection>
 {
 private:

@@ -61,9 +61,6 @@ void RpcDispatcher::dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s
     google::protobuf::Message* rsp_msg = service->GetResponsePrototype(method).New();
 
     RpcController rpcController;
-    //IPNetAddr::s_ptr local_addr = std::make_shared<IPNetAddr>("127.0.0.1",1234);
-    //rpcController.SetLocalAddr(connection->getLocalAddr());
-    //rpcController.SetPeerAddr(connection->getPeerAddr());
     rpcController.SetMsgId(req_protocol->m_msg_id);
 
     service->CallMethod(method,&rpcController,req_msg,rsp_msg,NULL);

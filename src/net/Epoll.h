@@ -7,9 +7,10 @@
 #include <vector>
 #include "Channel.h"
 
-/*对epoll的相关操作进行了封装，添加，修改，等待获取可用fd*/
+/**
+ * @param 对epoll的相关操作进行了封装，添加，修改，等待获取可用fd
+*/
 class Channel;
-
 class Epoll
 {
 private:

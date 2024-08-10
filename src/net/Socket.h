@@ -10,7 +10,9 @@
 
 int createnonblocking();
 
-/*封装socket类，对socket的一些操作进行封装，如listen，bind*/
+/**
+ * 封装socket类，对socket的一些操作进行封装，如listen，bind
+*/
 class Socket
 {
 private:

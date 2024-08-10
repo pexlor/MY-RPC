@@ -14,7 +14,11 @@
 class Epoll;
 class Channel;
 class Connection;
+
 using spConnection = std::shared_ptr<Connection>;
+/**
+ * @param 事件循环类，
+*/
 class EventLoop
 {
 private:

@@ -62,6 +62,8 @@
         "unordered_set": "cpp",
         "chrono": "cpp",
         "optional": "cpp",
-        "fstream": "cpp"
+        "fstream": "cpp",
+        "list": "cpp",
+        "cinttypes": "cpp"
     }
 }

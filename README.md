@@ -10,22 +10,21 @@ Liunx + protobuf + tinyxml + c++
 5. 自定义rpc协议的编码解码
 6. rpc分发器，rpc服务端，rpc客户端
 
-基础网络架构：
-
-RPC服务架构：
+网络服务器框架（multiple reactor + threadpool）：
+![Network Server Framework](/res/NetworkServerFramework.png "Network Server Framework")
 
 RPC自定义协议协议：
 ![TinyPB](/res/TinyPB.png "TingPB")
 
 性能测试：
-测试环境： 系统(centos 8.0 64bit), 硬件(2核｜2GIB｜系统盘40GIB｜峰值带宽 2Mbit/s)  
-测试指标：（每个连接发生10w条消息）(与sogo开源srpc对比)  
+测试环境： 系统(centos 8.0 64bit), 硬件(2核｜2GIB｜系统盘40GIB｜峰值带宽 2Mbit/s)
+测试指标：（每个连接发生10w条消息）(与sogo开源srpc对比)
     单个连接QPS：me:1.1w  srpc:1.6w  差距45%
     20个连接QPS：me:2.8w  srpc:3.6w  差距28%（注：srpc的CPU占用率仅为35%）
-    总结：性能差距较大  
-平均响应时间： 
-并发用户数：  
-后续的更新：  
+    总结：性能差距较大
+平均响应时间：
+并发用户数：
+后续的更新：
     TODO：异步双缓冲日志 动态线程池 使用io_uring 协程 zookeeper 架构图 性能优化
     DONE:  动态线程池,异步双缓冲日志
 

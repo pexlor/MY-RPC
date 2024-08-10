@@ -12,9 +12,9 @@
 #include <functional>
 #include <mutex>
 
-class Channel;
-class Socket;
-class EventLoop;
+/**
+ * @param TCP服务类
+*/
 class TcpServer
 {
 private:
@@ -54,5 +54,4 @@ public:
     void setonmessage(std::function<void(spConnection,std::string &)> fn);
     void setsendcomplate(std::function<void(spConnection )> fn);
     void setepolltimeout(std::function<void(EventLoop *)> fn);
-
 };

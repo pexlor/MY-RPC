@@ -5,12 +5,15 @@
 #include "Connection.h"
 #include <functional>
 
-class EventLoop;
+/**
+ * @param Channel类，封装epoll的事件和事件对应的回调函数
+*/
 class Channel
 {
 private:
-    int fd_ = -1;
-    EventLoop* loop_ ; //非此类管理。需要调用其中的函数设置epoll
+    int fd_ = -1; //事件对应的fd
+    EventLoop* loop_ ; //在哪个EventLoop中，在这里面用于处理对应的事件
+
     bool inepoll_ = false;
     uint32_t events_ = 0;
     uint32_t revents_ = 0;

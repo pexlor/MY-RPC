@@ -5,8 +5,8 @@
 #include <string>
 
 
-/*
-    基础地址类，封装了对地址的操作
+/**
+ * @param 基础地址类，封装了对地址的操作
 */
 class InetAddress
 { 

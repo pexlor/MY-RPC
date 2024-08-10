@@ -60,16 +60,11 @@ void TcpServer::errorconnection(spConnection  conn)
 
 void TcpServer::newconnction(std::unique_ptr<Socket> clientsock) //accept会调用
 {
-    //printf("TcpServer: %d\n",clientsock->fd()%threadnum_);
     int sockfd = clientsock->fd();
     spConnection conn(new Connection(subloops_[sockfd%threadnum_].get(),std::move(clientsock)));
 
     std::function<void(spConnection ,std::string &)> a =  std::bind(&TcpServer::onmessage,this,std::placeholders::_1,std::placeholders::_2);
-    if(a==nullptr)
-    {
-        printf("big error\n");
-        exit(-1);
-    }
+
     conn->setonmessagecallback(a);
     conn->setclosecallback(std::bind(&TcpServer::closeconnection,this,std::placeholders::_1));
     conn->seterrorcallback(std::bind(&TcpServer::errorconnection,this,std::placeholders::_1));
@@ -85,13 +80,11 @@ void TcpServer::newconnction(std::unique_ptr<Socket> clientsock) //accept会调�
 
 void TcpServer::onmessage(spConnection  conn,std::string &message)
 {
-    //printf("Connection2 recv: %s \n",message.data());
     onmessage_(conn,message);
 }
 
 void TcpServer::sendcomplate(spConnection  conn)
 {
-    //printf("send complate\n");
     sendcomplate_(conn);
 }
 

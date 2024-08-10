@@ -12,8 +12,8 @@ Acceptor::Acceptor(EventLoop* loop,const std::string &ip , uint16_t port):loop_(
     servsock_.setreuseaddr(true);
     servsock_.setreuseport(true);
     servsock_.settcpnodelay(true);
-    servsock_.setkeepalive(true);
-    servsock_.setipport(ip,port);
+    servsock_.setkeepalive(true);//保持长连接
+    //servsock_.setipport(ip,port);
     servsock_.bind(servaddr);
     servsock_.listen(128);
     //acceptchannel_.useet();
