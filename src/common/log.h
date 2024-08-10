@@ -7,7 +7,7 @@
 #include "util.h"
 #include <sys/time.h>
 #include "config.h"
-#include "src/common/mutex.h"
+#include <mutex>
 #include "asynclog.h"
 
 template<typename... Args>
@@ -64,7 +64,7 @@ public:
     void log();
     ~Logger();
 private:
-    Mutex m_mutex = Mutex();
+    std::mutex m_mutex;
     LogLevel m_set_level;
     std::queue<std::string> m_buffer;
     AsyncLogger asyncLog_;

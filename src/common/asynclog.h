@@ -12,7 +12,6 @@
 #include <cassert>
 #include "Buffer.h"
 
-
 //todo: 线程准备好后才能append
 class AsyncLogger {
 private:

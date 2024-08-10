@@ -117,7 +117,7 @@ LogLevel Logger::getLogLevel()
 
 void Logger::pushlog(const std::string & msg)
 {
-    ScopeMutex<Mutex> lock(m_mutex);
+    std::lock_guard<std::mutex> lock(m_mutex);
     if(Config::GetGlobalConfig()->m_enable_sync_log) m_buffer.push(msg);
     //asyncLog_.append(msg,msg.size());
 }
@@ -129,7 +129,7 @@ Logger::~Logger()
 
 void Logger::log()
 {
-    ScopeMutex<Mutex> lock(m_mutex);
+    std::lock_guard<std::mutex> lock(m_mutex);
     while (!m_buffer.empty()) {
         std::string msg = m_buffer.front();
         m_buffer.pop();
