@@ -79,7 +79,6 @@ std::cout <<"asdasdasd:"<<std::endl;
     }
     m_ip = host_data.substr(0, idx);
     m_port = atoi(host_data.substr(idx+1, host_data.size()-idx).c_str()); 
-    std::cout << m_ip << ":" << m_port << "\n";
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(m_port);
     if (inet_pton(AF_INET, m_ip.c_str(), &(server_addr.sin_addr)) <= 0) {
