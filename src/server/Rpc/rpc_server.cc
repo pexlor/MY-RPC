@@ -51,7 +51,6 @@ void RPCServer::Stop()
 {
     //停止工作线程
     threadpoll_.Stop();
-    //停止
     tcpserver_.stop();
     DEBUGLOG("RPCServer Stop!");
 }

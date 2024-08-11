@@ -34,7 +34,7 @@ void ZkClient::Start()
     std::string port = Config::GetGlobalConfig()->m_zookeeper_port;
 
     std::string connstr = host + ":" + port;
-    printf("host = %s\n",connstr.c_str());
+    //printf("host = %s\n",connstr.c_str());
 	/*
 	zookeeper_mt：多线程版本
 	zookeeper的API客户端程序提供了三个线程
