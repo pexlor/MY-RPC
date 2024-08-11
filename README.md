@@ -9,6 +9,7 @@ Liunx + protobuf + tinyxml + zookeeper +c++
 4. 双缓冲异步日志/同步日志
 5. 自定义rpc协议的编码解码
 6. rpc分发器，rpc服务端，rpc客户端
+7. zookeeper注册中心于分布式读写锁
 
 网络服务器框架（multiple reactor + threadpool）：
 ![Network Server Framework](/res/NetworkServerFramework.png "Network Server Framework")
