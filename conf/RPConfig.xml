@@ -9,7 +9,12 @@
     </log>
     <server>
         <port>5000</port>
+        <ip>127.0.0.1</ip>
         <io_threads>4</io_threads>
         <work_threads>4</work_threads>
     </server>
+    <zookeeper>
+        <zookeeperip>127.0.0.1</zookeeperip>
+        <zookeeperport>2181</zookeeperport>
+    </zookeeper>
 </root>

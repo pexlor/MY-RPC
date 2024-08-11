@@ -9,9 +9,15 @@ public:
     std::string m_log_level;
     std::string m_log_log_file_name;
     std::string m_log_file_path;
+
+    std::string m_zookeeper_ip;
+    std::string m_zookeeper_port;
     int m_port {0}; 
+    std::string m_ip;
+
     int m_io_threads {0};
     int m_work_threads {0};
+    
     bool m_enable_sync_log {false};
     int m_log_asyn_flush_time;
 public:

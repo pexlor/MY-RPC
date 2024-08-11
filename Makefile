@@ -1,6 +1,7 @@
 PATH_BIN = bin
 PATH_LIB = lib
 PATH_OBJ = obj
+ZOOKEEPER_INC_PATH := /usr/local/include/zookeeper
 
 PATH_SRC = src
 PATH_COMM = $(PATH_SRC)/common
@@ -29,7 +30,7 @@ CXX := g++
 
 CXXFLAGS += -g -O0 -std=c++11 -Wall -Wno-deprecated -Wno-unused-but-set-variable
 
-CXXFLAGS += -I./ -I$(PATH_SRC)	-I$(PATH_COMM) -I$(PATH_NET)  -I$(PATH_CODER) -I$(PATH_RPC) 
+CXXFLAGS += -I./ -I$(PATH_SRC)	-I$(PATH_COMM) -I$(PATH_NET)  -I$(PATH_CODER) -I$(PATH_RPC) -I ${ZOOKEEPER_INC_PATH}
 
 LIBS += /usr/local/lib/libprotobuf.a	/usr/lib/libtinyxml.a
 
@@ -47,10 +48,10 @@ LIB_OUT := $(PATH_LIB)/librpc.a
 
 
 $(PATH_BIN)/test_rpc_client: $(LIB_OUT)
-	$(CXX) $(CXXFLAGS) $(PATH_TESTCASES)/test_rpc_client.cc $(PATH_TESTCASES)/order.pb.cc -o $@ $(LIB_OUT) $(LIBS) -ldl -pthread
+	$(CXX) $(CXXFLAGS) $(PATH_TESTCASES)/test_rpc_client.cc $(PATH_TESTCASES)/order.pb.cc -o $@ $(LIB_OUT) $(LIBS) -ldl -pthread -l zookeeper_mt
 
 $(PATH_BIN)/test_rpc_server: $(LIB_OUT)
-	$(CXX) $(CXXFLAGS) $(PATH_TESTCASES)/test_rpc_server.cc $(PATH_TESTCASES)/order.pb.cc -o $@ $(LIB_OUT) $(LIBS) -ldl -pthread -v
+	$(CXX) $(CXXFLAGS) $(PATH_TESTCASES)/test_rpc_server.cc $(PATH_TESTCASES)/order.pb.cc -o $@ $(LIB_OUT) $(LIBS) -ldl -pthread -l zookeeper_mt
 
 $(PATH_BIN)/test_log: $(LIB_OUT)
 	$(CXX) $(CXXFLAGS) $(PATH_TESTCASES)/test_log.cc -o $@ $(LIB_OUT) $(LIBS) -ldl -pthread
@@ -59,8 +60,7 @@ $(LIB_OUT): $(COMM_OBJ) $(NET_OBJ) $(CODER_OBJ) $(RPC_OBJ)
 	cd $(PATH_OBJ) && ar rcv librpc.a *.o && cp librpc.a ../lib/
 
 $(PATH_OBJ)/%.o : $(PATH_COMM)/%.cc
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
+	$(CXX) $(CXXFLAGS) -c $< -o $@ 
 
 $(PATH_OBJ)/%.o : $(PATH_NET)/%.cc
 	$(CXX) $(CXXFLAGS) -c $< -o $@

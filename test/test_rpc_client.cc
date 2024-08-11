@@ -44,9 +44,10 @@ void testRpcChannel()
     control.SetTimeout(10000);
     mychannel.Init(NULL, NULL, NULL, NULL);
     
-    for(int i=0;i<100000;i++)
+    for(int i=0;i<1;i++)
     {
         Order_Stub(&mychannel).makeOrder(&control, &requst, &reponse, closure.get());
+        std::cout << "Getresponse:"<<reponse.order_id() << std::endl;
     }
 }
 

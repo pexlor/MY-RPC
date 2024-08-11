@@ -11,6 +11,7 @@
 #include "coder/abstract_coder.h"
 #include "src/common/log.h"
 #include "rpc_dispatcher.h"
+#include "common/zookeeperutil.h"
 
 class RPCServer
 {

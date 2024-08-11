@@ -50,8 +50,11 @@ Config::Config():
     m_log_file_path(""),
     m_log_log_file_name("RpcLog.txt"),
     m_port(5000),
+    m_ip("127.0.0.1"),
     m_enable_sync_log(false),
-    m_log_asyn_flush_time(3.0f)
+    m_log_asyn_flush_time(3),
+    m_zookeeper_ip("127.0.0.1"),
+    m_zookeeper_port("5000")
 {
 
 }
@@ -72,6 +75,7 @@ Config::Config(const char *xmlfile)
     READ_XML_NODE(root, xml_document);
     READ_XML_NODE(log, root_node);
     READ_XML_NODE(server, root_node);
+    READ_XML_NODE(zookeeper, root_node);
 
     READ_STR_FROM_XML_NODE(log_level, log_node);
     READ_STR_FROM_XML_NODE(log_file_name, log_node);
@@ -80,19 +84,26 @@ Config::Config(const char *xmlfile)
     READ_STR_FROM_XML_NODE(log_asyn_flush_time, log_node);
 
     READ_STR_FROM_XML_NODE(port, server_node);
+    READ_STR_FROM_XML_NODE(ip, server_node);
     READ_STR_FROM_XML_NODE(work_threads, server_node);
     READ_STR_FROM_XML_NODE(io_threads, server_node);
+
+    READ_STR_FROM_XML_NODE(zookeeperip, zookeeper_node);
+    READ_STR_FROM_XML_NODE(zookeeperport, zookeeper_node);
     
     m_port = std::atoi(port_str.c_str());
+    m_ip = zookeeperip_str;
     m_io_threads = std::atoi(io_threads_str.c_str());
     m_work_threads = std::atoi(work_threads_str.c_str());
 
     m_log_level = log_level_str;
     m_log_file_path = log_file_path_str;
     m_log_log_file_name = log_file_name_str;
-    m_port = std::atoi(port_str.c_str());
     m_enable_sync_log = (enable_sync_log_str == "true") ? true : false;
     m_log_asyn_flush_time = std::atoi(log_asyn_flush_time_str.c_str());
+
+    m_zookeeper_ip = zookeeperip_str;
+    m_zookeeper_port = zookeeperport_str;
 
     if(!(m_io_threads &&  m_port && m_log_asyn_flush_time && m_work_threads))
     {

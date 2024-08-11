@@ -18,6 +18,8 @@
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/message.h>
 #include <coder/abstract_coder.h>
+#include "common/zookeeperutil.h"
+#include <zookeeper/zookeeper.h>
 
 #define NEWMESSAGE(type, var_name) \
     std::shared_ptr<type> var_name = std::make_shared<type>(); \
@@ -44,7 +46,7 @@ public:
     using message_s_ptr = std::shared_ptr<google::protobuf::Message>;
     using closure_s_ptr = std::shared_ptr<google::protobuf::Closure>;
 
-    RpcChannel(const char * ip ,uint16_t port);
+    RpcChannel(const char * ip = "127.0.0.1",uint16_t port = 5000);
 
     ~RpcChannel();
 
@@ -76,6 +78,8 @@ private:
     bool m_is_init {false};
     std::atomic<bool> isConnect_{false};
     AbstractCoder* m_coder_;
+
+    ZkClient m_zkCli;
 
 };
 

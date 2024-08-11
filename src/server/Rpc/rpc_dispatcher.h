@@ -21,8 +21,10 @@ public:
     void dispatch(AbstractProtocol::s_ptr request,AbstractProtocol::s_ptr response);
     void registerService(service_ptr service);
     void unregisterService(service_ptr service);
-private:
+    bool static parseServiceFullName(const std::string& full_name,std::string& service_name,std::string& method_name);
+public:
     std::map<std::string,service_ptr> m_service_map;
+private:
     void setTinyPBError(std::shared_ptr<TinyPBProtocol> msg,int32_t err_code,const std::string err_info);
-    bool parseServiceFullName(const std::string& full_name,std::string& service_name,std::string& method_name);
+    
 };

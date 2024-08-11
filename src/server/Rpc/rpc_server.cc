@@ -22,6 +22,26 @@ RPCServer::~RPCServer()
 
 void RPCServer::Start()
 {
+    ZkClient zkCli;
+    std::string ip = Config::GetGlobalConfig()->m_ip;
+    uint16_t port = Config::GetGlobalConfig()->m_port;
+    
+    zkCli.Start();
+    //std::cout<<RpcDispatcher::GetRpcDispatcher()->m_service_map.size()<<std::endl;
+    for(auto it : RpcDispatcher::GetRpcDispatcher()->m_service_map){
+        std::string service_name = it.first;
+        for(int i = 0 ;i < it.second.get()->GetDescriptor()->method_count();i++){
+            std::string method_name = it.second.get()->GetDescriptor()->method(i)->name();
+            std::cout<< service_name << "." << method_name <<std::endl;
+            std::string service_path = "/" + service_name;
+            zkCli.Create(service_path.c_str(), nullptr, 0);
+            std::string method_path = service_path + "/" + method_name;
+            char method_path_data[128] = {0};
+            sprintf(method_path_data, "%s:%d", ip.c_str(), port);
+            std::cout<< method_path_data << std::endl;
+            zkCli.Create(method_path.c_str(), method_path_data, strlen(method_path_data), ZOO_EPHEMERAL);
+        }
+    }
     tcpserver_.start();
     DEBUGLOG("RPCServer Start Successed!");
 }

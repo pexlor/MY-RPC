@@ -8,13 +8,7 @@ RpcChannel::RpcChannel(const char * ip ,uint16_t port):
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     m_coder_= new TinyPBCoder();
 
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(m_port);
-    if (inet_pton(AF_INET, m_ip.c_str(), &(server_addr.sin_addr)) <= 0) {
-        std::cerr << "Invalid address/ Address not supported" << std::endl;
-        close(sockfd);
-        exit(-1);
-    }
+    
 }
 
 RpcChannel::~RpcChannel() {
@@ -23,9 +17,11 @@ RpcChannel::~RpcChannel() {
 }
 
 void RpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method, 
-                        google::protobuf::RpcController* controller, const google::protobuf::Message* request,
-                        google::protobuf::Message* response, google::protobuf::Closure* done) {
-
+                        google::protobuf::RpcController* controller,
+                        const google::protobuf::Message* request,
+                        google::protobuf::Message* response,
+                        google::protobuf::Closure* done) {
+std::cout <<"asdasdasd:"<<std::endl;
     std::shared_ptr<TinyPBProtocol> req_protocol = std::make_shared<TinyPBProtocol>();
     RpcController* my_controller = dynamic_cast<RpcController*>(controller);
     if (my_controller == NULL) {
@@ -64,6 +60,33 @@ void RpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method,
 
     std::string out_buf;
     m_coder_->encode(messages,out_buf);
+
+    //  /UserServiceRpc/Login
+    std::string method_path = "/" + method->service()->name() + "/" + method->name();;
+    // 127.0.0.1:5000
+    std::string host_data = m_zkCli.GetData(method_path.c_str());
+
+    if (host_data == "")
+    {
+        controller->SetFailed(method_path + " is not exist!");
+        return;
+    }
+    int idx = host_data.find(":");
+    if (idx == -1)
+    {
+        controller->SetFailed(method_path + " address is invalid!");
+        return;
+    }
+    m_ip = host_data.substr(0, idx);
+    m_port = atoi(host_data.substr(idx+1, host_data.size()-idx).c_str()); 
+    std::cout << m_ip << ":" << m_port << "\n";
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(m_port);
+    if (inet_pton(AF_INET, m_ip.c_str(), &(server_addr.sin_addr)) <= 0) {
+        std::cerr << "Invalid address/ Address not supported" << std::endl;
+        close(sockfd);
+        exit(-1);
+    }
 
 ConnectionErrorGoTo:
     if(!isConnect_)
@@ -111,6 +134,9 @@ void RpcChannel::Init(controller_s_ptr controller, message_s_ptr req, message_s_
     m_response = rsp;
     m_closure = done;
     //todo：添加zookeepor获取服务器IP
+    
+    m_zkCli.Start();
+
     m_is_init = true;
 }
 
