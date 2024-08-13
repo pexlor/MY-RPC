@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 //伪分布式部署 host list最好以配置文件形式，此处为测试程序，暂时写死
-const char * host_list = "127.0.0.1:12181";
+const char * host_list = "127.0.0.1:2181";
 
 void zk_watcher(zhandle_t *zh, int type, int state, const char *path,void *watcherCtx)
 {

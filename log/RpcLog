@@ -242,3 +242,115 @@
 [DEBUG]	[24-08-11 19:21:39.91]	[63239:63249]	[src/server/Rpc/coder/tinypb_coder.cc:207]	encode message[9912312998888] success
 [DEBUG]	[24-08-11 19:21:39.91]	[63239:63244]	[src/net/Connection.cc:39]	connection close,fd = 31
 [DEBUG]	[24-08-11 19:21:39.91]	[63239:63244]	[src/net/Connection.cc:19]	~Connection
+[DEBUG]	[24-08-13 12:12:12.295]	[110175:110175]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:12:17.4]	[110179:110179]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:12:17.824]	[110183:110183]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:12:18.647]	[110187:110187]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:12:19.500]	[110191:110191]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:56:56.510]	[114913:114913]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:56:56.510]	[114913:114913]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:56:56.510]	[114913:114913]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:56:56.510]	[114812:114812]	[src/net/Acceptor.cc:31]	New connection ,ip = 127.0.0.1,port = 55986
+[DEBUG]	[24-08-13 12:56:56.510]	[114812:114820]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:56:56.510]	[114812:114820]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:56:56.510]	[114812:114820]	[src/server/Rpc/coder/tinypb_coder.cc:207]	encode message[9912312998888] success
+[DEBUG]	[24-08-13 12:56:56.510]	[114812:114816]	[src/net/Connection.cc:39]	connection close,fd = 28
+[DEBUG]	[24-08-13 12:56:56.510]	[114812:114816]	[src/net/Connection.cc:19]	~Connection
+[DEBUG]	[24-08-13 12:56:58.755]	[114812:114821]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:56:58.755]	[114812:114821]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:56:58.755]	[114812:114821]	[src/server/Rpc/coder/tinypb_coder.cc:207]	encode message[9912312998888] success
+[DEBUG]	[24-08-13 12:56:58.755]	[114934:114934]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:56:58.755]	[114934:114934]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:56:58.755]	[114934:114934]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:56:59.766]	[114942:114942]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:56:59.766]	[114942:114942]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:56:59.766]	[114942:114942]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:57:00.539]	[114948:114948]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:00.539]	[114948:114948]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:00.539]	[114948:114948]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:57:01.478]	[114954:114954]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:01.479]	[114954:114954]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:01.479]	[114954:114954]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:56:58.755]	[114812:114816]	[src/net/Connection.cc:39]	connection close,fd = 28
+[DEBUG]	[24-08-13 12:56:58.755]	[114812:114816]	[src/net/Connection.cc:19]	~Connection
+[DEBUG]	[24-08-13 12:56:59.765]	[114812:114812]	[src/net/Acceptor.cc:31]	New connection ,ip = 127.0.0.1,port = 55994
+[DEBUG]	[24-08-13 12:56:59.765]	[114812:114822]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:56:59.765]	[114812:114822]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:56:59.765]	[114812:114822]	[src/server/Rpc/coder/tinypb_coder.cc:207]	encode message[9912312998888] success
+[DEBUG]	[24-08-13 12:56:59.766]	[114812:114816]	[src/net/Connection.cc:39]	connection close,fd = 28
+[DEBUG]	[24-08-13 12:56:59.766]	[114812:114816]	[src/net/Connection.cc:19]	~Connection
+[DEBUG]	[24-08-13 12:57:00.539]	[114812:114812]	[src/net/Acceptor.cc:31]	New connection ,ip = 127.0.0.1,port = 55998
+[DEBUG]	[24-08-13 12:57:00.539]	[114812:114823]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:00.539]	[114812:114823]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:00.539]	[114812:114823]	[src/server/Rpc/coder/tinypb_coder.cc:207]	encode message[9912312998888] success
+[DEBUG]	[24-08-13 12:57:00.539]	[114812:114816]	[src/net/Connection.cc:39]	connection close,fd = 28
+[DEBUG]	[24-08-13 12:57:00.539]	[114812:114816]	[src/net/Connection.cc:19]	~Connection
+[DEBUG]	[24-08-13 12:57:01.478]	[114812:114812]	[src/net/Acceptor.cc:31]	New connection ,ip = 127.0.0.1,port = 56002
+[DEBUG]	[24-08-13 12:57:01.478]	[114812:114820]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:01.478]	[114812:114820]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:01.478]	[114812:114820]	[src/server/Rpc/coder/tinypb_coder.cc:207]	encode message[9912312998888] success
+[DEBUG]	[24-08-13 12:57:01.479]	[114812:114816]	[src/net/Connection.cc:39]	connection close,fd = 28
+[DEBUG]	[24-08-13 12:57:01.479]	[114812:114816]	[src/net/Connection.cc:19]	~Connection
+[DEBUG]	[24-08-13 12:57:02.436]	[114812:114812]	[src/net/Acceptor.cc:31]	New connection ,ip = 127.0.0.1,port = 56006
+[DEBUG]	[24-08-13 12:57:02.436]	[114812:114821]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:02.436]	[114812:114821]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:02.436]	[114812:114821]	[src/server/Rpc/coder/tinypb_coder.cc:207]	encode message[9912312998888] success
+[DEBUG]	[24-08-13 12:57:02.436]	[114958:114958]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:02.436]	[114958:114958]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:02.436]	[114958:114958]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:57:03.216]	[114971:114971]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:03.216]	[114971:114971]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:03.216]	[114971:114971]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:57:03.913]	[114980:114980]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:03.913]	[114980:114980]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:03.913]	[114980:114980]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:57:04.661]	[114984:114984]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:04.661]	[114984:114984]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:04.661]	[114984:114984]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:57:05.260]	[114992:114992]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:05.260]	[114992:114992]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:05.260]	[114992:114992]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:57:02.436]	[114812:114816]	[src/net/Connection.cc:39]	connection close,fd = 28
+[DEBUG]	[24-08-13 12:57:02.436]	[114812:114816]	[src/net/Connection.cc:19]	~Connection
+[DEBUG]	[24-08-13 12:57:03.216]	[114812:114812]	[src/net/Acceptor.cc:31]	New connection ,ip = 127.0.0.1,port = 56010
+[DEBUG]	[24-08-13 12:57:03.216]	[114812:114822]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:03.216]	[114812:114822]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:03.216]	[114812:114822]	[src/server/Rpc/coder/tinypb_coder.cc:207]	encode message[9912312998888] success
+[DEBUG]	[24-08-13 12:57:03.216]	[114812:114816]	[src/net/Connection.cc:39]	connection close,fd = 28
+[DEBUG]	[24-08-13 12:57:03.216]	[114812:114816]	[src/net/Connection.cc:19]	~Connection
+[DEBUG]	[24-08-13 12:57:03.913]	[114812:114812]	[src/net/Acceptor.cc:31]	New connection ,ip = 127.0.0.1,port = 56014
+[DEBUG]	[24-08-13 12:57:03.913]	[114812:114823]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:03.913]	[114812:114823]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:03.913]	[114812:114823]	[src/server/Rpc/coder/tinypb_coder.cc:207]	encode message[9912312998888] success
+[DEBUG]	[24-08-13 12:57:03.913]	[114812:114816]	[src/net/Connection.cc:39]	connection close,fd = 28
+[DEBUG]	[24-08-13 12:57:03.914]	[114812:114816]	[src/net/Connection.cc:19]	~Connection
+[DEBUG]	[24-08-13 12:57:04.661]	[114812:114812]	[src/net/Acceptor.cc:31]	New connection ,ip = 127.0.0.1,port = 56018
+[DEBUG]	[24-08-13 12:57:04.661]	[114812:114820]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:04.661]	[114812:114820]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:04.661]	[114812:114820]	[src/server/Rpc/coder/tinypb_coder.cc:207]	encode message[9912312998888] success
+[DEBUG]	[24-08-13 12:57:04.661]	[114812:114816]	[src/net/Connection.cc:39]	connection close,fd = 28
+[DEBUG]	[24-08-13 12:57:04.661]	[114812:114816]	[src/net/Connection.cc:19]	~Connection
+[DEBUG]	[24-08-13 12:57:05.260]	[114812:114812]	[src/net/Acceptor.cc:31]	New connection ,ip = 127.0.0.1,port = 56022
+[DEBUG]	[24-08-13 12:57:05.260]	[114812:114821]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:05.260]	[114812:114821]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:05.260]	[114812:114821]	[src/server/Rpc/coder/tinypb_coder.cc:207]	encode message[9912312998888] success
+[DEBUG]	[24-08-13 12:57:05.260]	[114812:114816]	[src/net/Connection.cc:39]	connection close,fd = 28
+[DEBUG]	[24-08-13 12:57:05.260]	[114812:114816]	[src/net/Connection.cc:19]	~Connection
+[DEBUG]	[24-08-13 12:57:05.902]	[114998:114998]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:05.902]	[114998:114998]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:05.902]	[114998:114998]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:57:06.702]	[115002:115002]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:06.702]	[115002:115002]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:06.703]	[115002:115002]	[src/server/Rpc/rpc_channel.cc:16]	~RpcChannel
+[DEBUG]	[24-08-13 12:57:05.902]	[114812:114812]	[src/net/Acceptor.cc:31]	New connection ,ip = 127.0.0.1,port = 56026
+[DEBUG]	[24-08-13 12:57:05.902]	[114812:114822]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:05.902]	[114812:114822]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:05.902]	[114812:114822]	[src/server/Rpc/coder/tinypb_coder.cc:207]	encode message[9912312998888] success
+[DEBUG]	[24-08-13 12:57:05.902]	[114812:114816]	[src/net/Connection.cc:39]	connection close,fd = 28
+[DEBUG]	[24-08-13 12:57:05.902]	[114812:114816]	[src/net/Connection.cc:19]	~Connection
+[DEBUG]	[24-08-13 12:57:06.702]	[114812:114812]	[src/net/Acceptor.cc:31]	New connection ,ip = 127.0.0.1,port = 56030
+[DEBUG]	[24-08-13 12:57:06.702]	[114812:114823]	[src/server/Rpc/coder/tinypb_coder.cc:123]	parse error_info=
+[DEBUG]	[24-08-13 12:57:06.702]	[114812:114823]	[src/server/Rpc/coder/tinypb_coder.cc:65]	decode end, read all buffer data
+[DEBUG]	[24-08-13 12:57:06.702]	[114812:114823]	[src/server/Rpc/coder/tinypb_coder.cc:207]	encode message[9912312998888] success
+[DEBUG]	[24-08-13 12:57:06.703]	[114812:114816]	[src/net/Connection.cc:39]	connection close,fd = 28
+[DEBUG]	[24-08-13 12:57:06.703]	[114812:114816]	[src/net/Connection.cc:19]	~Connection
